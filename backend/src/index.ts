@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import eventsRouter from './routes/events';
 
 dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 3001;
 

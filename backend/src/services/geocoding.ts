@@ -21,24 +21,8 @@ const MOCK_GEOCODING_DATA: Record<string, GeocodeResult> = {
 
 export class GeocodingService {
   static async geocodeAddress(address: string): Promise<GeocodeResult | null> {
-    // If no API key is configured, use mock data for development
     if (!GOOGLE_MAPS_API_KEY) {
-      console.log('No Google Maps API key configured, using mock geocoding data');
-      const normalizedAddress = address.toLowerCase().trim();
-      
-      // Try to find a match in mock data
-      for (const [key, value] of Object.entries(MOCK_GEOCODING_DATA)) {
-        if (normalizedAddress.includes(key)) {
-          return value;
-        }
-      }
-      
-      // Return a default location if no match found
-      return {
-        latitude: 40.7128,
-        longitude: -74.0060,
-        formatted_address: 'New York, NY, USA'
-      };
+      throw new Error('Google Maps API key is not configured on the server.');
     }
 
     try {
@@ -72,19 +56,8 @@ export class GeocodingService {
     origins: string[],
     destinations: string[]
   ): Promise<DistanceMatrixResponse | null> {
-    // If no API key is configured, return mock distance data
     if (!GOOGLE_MAPS_API_KEY) {
-      console.log('No Google Maps API key configured, using mock distance data');
-      return {
-        status: 'OK',
-        rows: [{
-          elements: destinations.map(() => ({
-            status: 'OK',
-            distance: { text: '5.2 mi', value: 8368 },
-            duration: { text: '12 mins', value: 720 }
-          }))
-        }]
-      };
+      throw new Error('Google Maps API key is not configured on the server.');
     }
 
     try {
