@@ -37,4 +37,45 @@
 .hero-pattern {
   background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.1) 1px, transparent 0);
   background-size: 20px 20px;
+}
+
+/* Custom radial gradients for backsplash effect */
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
+.bg-gradient-radial.from-teal-400.via-teal-300.to-transparent {
+  background: radial-gradient(circle, #2dd4bf 0%, #5eead4 50%, transparent 100%);
+}
+
+.bg-gradient-radial.from-teal-500.via-teal-400.to-transparent {
+  background: radial-gradient(circle, #14b8a6 0%, #2dd4bf 50%, transparent 100%);
+}
+
+.bg-gradient-radial.from-teal-600.via-teal-500.to-transparent {
+  background: radial-gradient(circle, #0d9488 0%, #14b8a6 50%, transparent 100%);
+}
+
+.bg-gradient-radial.from-teal-300.to-transparent {
+  background: radial-gradient(circle, #5eead4 0%, transparent 100%);
+}
+
+.bg-gradient-radial.from-yellow-300.via-lime-300.to-transparent {
+  background: radial-gradient(circle, #fde047 0%, #bef264 50%, transparent 100%);
+}
+
+.bg-gradient-radial.from-lime-400.via-yellow-300.to-transparent {
+  background: radial-gradient(circle, #a3e635 0%, #fde047 50%, transparent 100%);
+}
+
+.bg-gradient-radial.from-yellow-400.via-lime-400.to-transparent {
+  background: radial-gradient(circle, #facc15 0%, #a3e635 50%, transparent 100%);
+}
+
+.bg-gradient-radial.from-lime-300.to-transparent {
+  background: radial-gradient(circle, #bef264 0%, transparent 100%);
+}
+
+.bg-gradient-radial.from-yellow-400.to-transparent {
+  background: radial-gradient(circle, #facc15 0%, transparent 100%);
 } 

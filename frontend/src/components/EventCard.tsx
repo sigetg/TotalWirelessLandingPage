@@ -4,9 +4,10 @@ import { EventSearchResult } from '../types';
 
 interface EventCardProps {
   eventResult: EventSearchResult;
+  lang?: 'en' | 'es';
 }
 
-const EventCard: React.FC<EventCardProps> = ({ eventResult }) => {
+const EventCard: React.FC<EventCardProps> = ({ eventResult, lang = 'en' }) => {
   const { event, distance, driving_distance, driving_duration } = eventResult;
 
   const formatDate = (dateString: string) => {
@@ -45,12 +46,33 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult }) => {
     return `${hours}h ${remainingMinutes}m`;
   };
 
+  // Helper to build Google Maps link
+  const getGoogleMapsUrl = () => {
+    const parts = [event.address, event.address2, event.city, event.state, event.zip]
+      .filter(Boolean)
+      .join(', ');
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(parts)}`;
+  };
+
+  const translations = {
+    en: {
+      straightLine: 'Straight-line',
+      driving: 'Driving',
+      getDirections: 'Get Directions',
+    },
+    es: {
+      straightLine: 'En línea recta',
+      driving: 'En coche',
+      getDirections: 'Obtener direcciones',
+    },
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200">
       <div className="p-6">
         {/* Event Type Badge */}
         <div className="mb-4">
-          <span className="inline-block bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+          <span className="inline-block bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
             {event.event_type}
           </span>
         </div>
@@ -60,18 +82,18 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult }) => {
           {/* Date and Time */}
           <div className="flex items-center space-x-2 text-gray-600">
             <Calendar className="h-4 w-4" />
-            <span className="text-sm">{formatDate(event.event_date)}</span>
+            <span className="text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>{formatDate(event.event_date)}</span>
           </div>
 
           <div className="flex items-center space-x-2 text-gray-600">
             <Clock className="h-4 w-4" />
-            <span className="text-sm">{formatTime(event.event_time)}</span>
+            <span className="text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>{formatTime(event.event_time)}</span>
           </div>
 
           {/* Address */}
           <div className="flex items-start space-x-2 text-gray-700">
             <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-            <div className="text-sm">
+            <div className="text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
               <div>{event.address}</div>
               {event.address2 && <div>{event.address2}</div>}
               <div>{event.city}, {event.state} {event.zip}</div>
@@ -83,7 +105,7 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult }) => {
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center space-x-1 text-teal-600">
                 <MapPin className="h-4 w-4" />
-                <span>Straight-line: {formatDistance(distance)}</span>
+                <span style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>{translations[lang].straightLine}: {formatDistance(distance)}</span>
               </div>
             </div>
 
@@ -91,9 +113,9 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult }) => {
               <div className="flex items-center justify-between text-sm mt-1">
                 <div className="flex items-center space-x-1 text-blue-600">
                   <Car className="h-4 w-4" />
-                  <span>Driving: {formatDrivingDistance(driving_distance)}</span>
+                  <span style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>{translations[lang].driving}: {formatDrivingDistance(driving_distance)}</span>
                 </div>
-                <span className="text-gray-500">
+                <span className="text-gray-500" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
                   {formatDrivingDuration(driving_duration)}
                 </span>
               </div>
@@ -103,8 +125,13 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult }) => {
 
         {/* Action Button */}
         <div className="mt-4 pt-4 border-t border-gray-100">
-          <button className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-sm">
-            Get Directions
+          <button
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors duration-200 text-base shadow-lg"
+            onClick={() => window.open(getGoogleMapsUrl(), '_blank', 'noopener,noreferrer')}
+            type="button"
+            style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+          >
+            {translations[lang].getDirections}
           </button>
         </div>
       </div>

@@ -6,9 +6,11 @@ import { SearchFormData } from '../types';
 interface SearchFormProps {
   onSearch: (data: SearchFormData) => void;
   isLoading?: boolean;
+  lang: 'en' | 'es';
+  translations: any;
 }
 
-const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false }) => {
+const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, lang, translations }) => {
   const {
     register,
     handleSubmit,
@@ -27,7 +29,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false }) 
     const hasLocationData = data.address || data.zip || (data.city && data.state);
     
     if (!hasLocationData) {
-      alert('Please enter at least one location field (address, zip code, or city and state)');
+      alert(translations.enterLocation);
       return;
     }
     
@@ -40,8 +42,8 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false }) 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Address Input */}
           <div>
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-              Full Address
+            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+              {lang === 'es' ? 'Dirección completa' : 'Full Address'}
             </label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -49,51 +51,52 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false }) 
                 {...register('address')}
                 type="text"
                 id="address"
-                placeholder="Enter your full address"
+                placeholder={lang === 'es' ? 'Ingrese su dirección completa' : 'Enter your full address'}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+                style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
               />
             </div>
           </div>
-
           {/* Zip Code Input */}
           <div>
-            <label htmlFor="zip" className="block text-sm font-medium text-gray-700 mb-1">
-              Zip Code
+            <label htmlFor="zip" className="block text-sm font-medium text-gray-700 mb-1" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+              {lang === 'es' ? 'Código postal' : 'Zip Code'}
             </label>
             <input
               {...register('zip')}
               type="text"
               id="zip"
-              placeholder="Enter zip code"
+              placeholder={lang === 'es' ? 'Ingrese el código postal' : 'Enter zip code'}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+              style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
             />
           </div>
-
           {/* City Input */}
           <div>
-            <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-              City
+            <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+              {lang === 'es' ? 'Ciudad' : 'City'}
             </label>
             <input
               {...register('city')}
               type="text"
               id="city"
-              placeholder="Enter city name"
+              placeholder={lang === 'es' ? 'Ingrese el nombre de la ciudad' : 'Enter city name'}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+              style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
             />
           </div>
-
           {/* State Input */}
           <div>
-            <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
-              State
+            <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+              {lang === 'es' ? 'Estado' : 'State'}
             </label>
             <select
               {...register('state')}
               id="state"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+              style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
             >
-              <option value="">Select State</option>
+              <option value="">{lang === 'es' ? 'Seleccione estado' : 'Select State'}</option>
               <option value="AL">Alabama</option>
               <option value="AK">Alaska</option>
               <option value="AZ">Arizona</option>
@@ -147,11 +150,10 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false }) 
             </select>
           </div>
         </div>
-
         {/* Radius Input */}
         <div>
-          <label htmlFor="radius" className="block text-sm font-medium text-gray-700 mb-1">
-            Search Radius (miles)
+          <label htmlFor="radius" className="block text-sm font-medium text-gray-700 mb-1" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+            {lang === 'es' ? 'Radio de búsqueda (millas)' : 'Search Radius (miles)'}
           </label>
           <input
             {...register('radius', { min: 1, max: 100 })}
@@ -160,35 +162,37 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false }) 
             min="1"
             max="100"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+            style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
           />
           {errors.radius && (
-            <p className="text-red-500 text-sm mt-1">Radius must be between 1 and 100 miles</p>
+            <p className="text-red-500 text-sm mt-1" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+              {lang === 'es' ? 'El radio debe estar entre 1 y 100 millas' : 'Radius must be between 1 and 100 miles'}
+            </p>
           )}
         </div>
-
         {/* Submit Button */}
         <button
           type="submit"
           disabled={isLoading || !(watchedValues.address || watchedValues.zip || (watchedValues.city && watchedValues.state))}
-          className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+          className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-bold py-4 px-8 rounded-xl transition-colors duration-200 flex items-center justify-center space-x-2 text-lg shadow-lg"
+          style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
         >
           {isLoading ? (
             <>
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-              <span>Searching...</span>
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+              <span>{lang === 'es' ? 'Buscando...' : 'Searching...'}</span>
             </>
           ) : (
             <>
-              <Search className="h-5 w-5" />
-              <span>Find Events</span>
+              <Search className="h-6 w-6" />
+              <span>{lang === 'es' ? 'Buscar eventos' : 'Find Events'}</span>
             </>
           )}
         </button>
       </form>
-
       <div className="mt-4 text-center">
-        <p className="text-sm text-gray-500">
-          Enter any combination of address, zip code, or city and state
+        <p className="text-sm text-gray-500" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+          {translations.enterLocation}
         </p>
       </div>
     </div>

@@ -5,8 +5,46 @@ import EventCard from '../components/EventCard';
 import { eventService } from '../services/api';
 import { SearchFormData, EventSearchResult } from '../types';
 
+const translations = {
+  es: {
+    findEvents: 'Me alegro que hayas llegado',
+    discover: 'Ingresa tu código postal o dirección y mira lo que sucede en tu área',
+    findEventsHeader: 'Me alegro que hayas llegado',
+    searching: 'Buscando eventos...',
+    error: 'Ocurrió un error al buscar eventos',
+    noResults: 'No se encontraron eventos para los criterios de búsqueda.',
+    enterLocation: 'Ingrese cualquier combinación de dirección, código postal o ciudad y estado',
+    welcome: 'Bienvenido a Buscador de Eventos',
+    welcomeDesc: 'Descubre eventos y actividades emocionantes cerca de ti. Simplemente ingresa tu ubicación arriba para comenzar.',
+    feature1Title: 'Encuentra eventos cercanos',
+    feature1Desc: 'Busca por dirección, código postal o ciudad para encontrar eventos en tu área',
+    feature2Title: 'Información en tiempo real',
+    feature2Desc: 'Obtén distancia precisa y direcciones para cada evento',
+    feature3Title: 'Detalles del evento',
+    feature3Desc: 'Consulta fechas, horarios, ubicaciones y tipos de eventos de un vistazo',
+  },
+  en: {
+    findEvents: 'Glad you made it here',
+    discover: "Enter your zip code or address and see what's happening in your area",
+    findEventsHeader: 'Glad you made it here',
+    searching: 'Searching for events...',
+    error: 'An error occurred while searching for events',
+    noResults: 'No events found for the search criteria.',
+    enterLocation: 'Enter any combination of address, zip code, or city and state',
+    welcome: 'Welcome to Event Finder',
+    welcomeDesc: 'Discover exciting events and activities happening near you. Simply enter your location above to get started.',
+    feature1Title: 'Find Nearby Events',
+    feature1Desc: 'Search by address, zip code, or city to find events in your area',
+    feature2Title: 'Real-time Information',
+    feature2Desc: 'Get accurate distance and driving directions to each event',
+    feature3Title: 'Event Details',
+    feature3Desc: 'View dates, times, locations, and event types at a glance',
+  }
+};
+
 const HomePage: React.FC = () => {
   const [searchParams, setSearchParams] = useState<SearchFormData | null>(null);
+  const [lang, setLang] = useState<'en' | 'es'>('en');
 
   const {
     data: searchResults,
@@ -46,15 +84,15 @@ const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Top Bar */}
-      <div className="bg-black text-white text-sm">
+      <div className="bg-slate-900 text-white text-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-2">
-            <div className="flex items-center space-x-6">
-              <a href="#" className="hover:text-gray-300">Español</a>
-              <a href="#" className="hover:text-gray-300">Find a store</a>
-              <a href="#" className="hover:text-gray-300">Help & support</a>
-              <span>611611</span>
-            </div>
+          <div className="flex justify-end items-center py-2">
+            <button
+              className="hover:text-gray-300 focus:outline-none"
+              onClick={() => setLang(lang === 'en' ? 'es' : 'en')}
+            >
+              {lang === 'es' ? 'English' : 'Español'}
+            </button>
           </div>
         </div>
       </div>
@@ -62,54 +100,29 @@ const HomePage: React.FC = () => {
       {/* Main Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+          <div className="flex justify-center items-center py-4">
             {/* Logo */}
-            <div className="flex items-center">
+            <div className="flex items-center justify-center w-full">
               <img 
                 src="/verizontotallogo.png" 
                 alt="Total Wireless" 
-                className="h-12 w-auto"
+                className="h-28 w-auto"
+                style={{ height: '108px' }}
               />
-            </div>
-            
-            {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-gray-900 hover:text-red-600 font-medium">Shop</a>
-              <a href="#" className="text-gray-900 hover:text-red-600 font-medium">Deals</a>
-              <a href="#" className="text-gray-900 hover:text-red-600 font-medium">Pay</a>
-              <a href="#" className="text-gray-900 hover:text-red-600 font-medium">Activate</a>
-              <a href="#" className="text-gray-900 hover:text-red-600 font-medium">Why Total Wireless</a>
-            </nav>
-            
-            {/* Right side */}
-            <div className="flex items-center space-x-6">
-              <a href="#" className="text-gray-900 hover:text-red-600 font-medium">Login</a>
-              <a href="#" className="text-gray-900 hover:text-red-600 font-medium">Total Rewards</a>
-              <button className="text-gray-900 hover:text-red-600">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-              <button className="text-gray-900 hover:text-red-600">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m6 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
-                </svg>
-              </button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-blue-900 to-teal-400 relative overflow-hidden hero-pattern">
-        <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+      <section className="bg-slate-900 rounded-2xl shadow-xl mx-4 sm:mx-6 lg:mx-8 my-8 relative overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center text-white">
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6">
-              Find Events Near You
+          <div className="text-center">
+            <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-white" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+              {translations[lang].findEvents}
             </h1>
-            <p className="text-xl mb-8">
-              Discover exciting events and activities happening in your area
+            <p className="text-xl mb-8 text-teal-300" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+              {translations[lang].discover}
             </p>
           </div>
         </div>
@@ -118,9 +131,13 @@ const HomePage: React.FC = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Section */}
-        <div className="mb-8 bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Find Events Near You</h2>
-          <SearchForm onSearch={handleSearch} isLoading={searchParams ? isLoading : false} />
+        <div className="mb-8 bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl shadow-xl p-8 relative overflow-hidden">
+          <div className="relative z-10">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+              {lang === 'es' ? 'Buscar eventos' : 'Find Events'}
+            </h2>
+            <SearchForm onSearch={handleSearch} isLoading={searchParams ? isLoading : false} lang={lang} translations={translations[lang]} />
+          </div>
         </div>
 
         {/* Results Section */}
@@ -131,40 +148,29 @@ const HomePage: React.FC = () => {
               {isLoading ? (
                 <div className="flex items-center justify-center space-x-2">
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600"></div>
-                  <span className="text-lg font-medium text-gray-700">Searching for events...</span>
+                  <span className="text-lg font-medium text-gray-700">{translations[lang].searching}</span>
                 </div>
               ) : error ? (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                   <p className="text-red-700">
-                    {error instanceof Error ? error.message : 'An error occurred while searching for events'}
+                    {error instanceof Error
+                      ? translations[lang].error
+                      : (error as any)?.response?.data?.error || translations[lang].error}
                   </p>
                 </div>
               ) : searchResults && searchResults.length > 0 ? (
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                    Found {searchResults.length} events near you
-                  </h2>
-                  <p className="text-gray-600">
-                    Events sorted by distance from your location
-                  </p>
+                  {/* Results Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {searchResults.map((result, idx) => (
+                      <EventCard key={idx} eventResult={result} lang={lang} />
+                    ))}
+                  </div>
                 </div>
               ) : (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <p className="text-yellow-700">
-                    No events found within your search radius. Try expanding your search area or checking a different location.
-                  </p>
-                </div>
+                <div className="text-gray-500 text-lg">{translations[lang].noResults}</div>
               )}
             </div>
-
-            {/* Results Grid */}
-            {searchResults && searchResults.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {searchResults.map((eventResult) => (
-                  <EventCard key={eventResult.event.id} eventResult={eventResult} />
-                ))}
-              </div>
-            )}
           </div>
         )}
 
@@ -173,11 +179,10 @@ const HomePage: React.FC = () => {
           <div className="text-center py-12">
             <div className="max-w-2xl mx-auto">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Welcome to Event Finder
+                {translations[lang].welcome}
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Discover exciting events and activities happening near you. 
-                Simply enter your location above to get started.
+                {translations[lang].welcomeDesc}
               </p>
               
               {/* Features */}
@@ -189,8 +194,8 @@ const HomePage: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Find Nearby Events</h3>
-                  <p className="text-gray-600">Search by address, zip code, or city to find events in your area</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{translations[lang].feature1Title}</h3>
+                  <p className="text-gray-600">{translations[lang].feature1Desc}</p>
                 </div>
                 
                 <div className="text-center">
@@ -199,8 +204,8 @@ const HomePage: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Real-time Information</h3>
-                  <p className="text-gray-600">Get accurate distance and driving directions to each event</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{translations[lang].feature2Title}</h3>
+                  <p className="text-gray-600">{translations[lang].feature2Desc}</p>
                 </div>
                 
                 <div className="text-center">
@@ -209,8 +214,8 @@ const HomePage: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Event Details</h3>
-                  <p className="text-gray-600">View dates, times, locations, and event types at a glance</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{translations[lang].feature3Title}</h3>
+                  <p className="text-gray-600">{translations[lang].feature3Desc}</p>
                 </div>
               </div>
             </div>
@@ -219,15 +224,9 @@ const HomePage: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-black text-white py-8">
+      <footer className="bg-slate-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-sm">
-              We use technologies to collect and share information about your use of our site. 
-              By continuing, you agree to the use of these capabilities for a better experience and other purposes. 
-              Learn more in our <a href="#" className="underline">Privacy Policy</a>.
-            </p>
-          </div>
+
         </div>
       </footer>
     </div>
