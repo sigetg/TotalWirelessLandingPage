@@ -16,7 +16,7 @@ export class EventService {
   }
 
   static async searchEventsByLocation(search: LocationSearch): Promise<EventSearchResult[]> {
-    const { address, zip, city, state, radius = 50 } = search;
+    const { address, zip, city, state } = search;
     
     let userLat: number;
     let userLon: number;
@@ -47,7 +47,7 @@ export class EventService {
       throw new Error('Please provide an address, zip code, or city and state');
     }
 
-    // Get events within the radius using Haversine formula
+    // Get the 6 closest events using Haversine formula
     const query = `
       SELECT *,
         (3959 * acos(cos(radians($1)) * cos(radians(latitude)) * 
@@ -56,16 +56,14 @@ export class EventService {
       FROM events 
       WHERE latitude IS NOT NULL 
         AND longitude IS NOT NULL
-        AND (3959 * acos(cos(radians($1)) * cos(radians(latitude)) * 
-             cos(radians(longitude) - radians($2)) + sin(radians($1)) * 
-             sin(radians(latitude)))) <= $3
       ORDER BY distance
+      LIMIT 6
     `;
 
-    const result = await pool.query(query, [userLat, userLon, radius]);
+    const result = await pool.query(query, [userLat, userLon]);
     
-    // Get driving distances for the closest events (limit to first 10 for API efficiency)
-    const events = result.rows.slice(0, 10);
+    // Get driving distances for the closest events
+    const events = result.rows;
     const eventSearchResults: EventSearchResult[] = [];
 
     if (events.length > 0) {

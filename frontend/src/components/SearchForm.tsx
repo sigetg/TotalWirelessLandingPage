@@ -16,11 +16,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, la
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<SearchFormData>({
-    defaultValues: {
-      radius: 50,
-    },
-  });
+  } = useForm<SearchFormData>();
 
   const watchedValues = watch();
 
@@ -150,26 +146,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, la
             </select>
           </div>
         </div>
-        {/* Radius Input */}
-        <div>
-          <label htmlFor="radius" className="block text-sm font-medium text-gray-700 mb-1" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
-            {lang === 'es' ? 'Radio de búsqueda (millas)' : 'Search Radius (miles)'}
-          </label>
-          <input
-            {...register('radius', { min: 1, max: 100 })}
-            type="number"
-            id="radius"
-            min="1"
-            max="100"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-            style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
-          />
-          {errors.radius && (
-            <p className="text-red-500 text-sm mt-1" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
-              {lang === 'es' ? 'El radio debe estar entre 1 y 100 millas' : 'Radius must be between 1 and 100 miles'}
-            </p>
-          )}
-        </div>
+        
         {/* Submit Button */}
         <button
           type="submit"

@@ -1,169 +1,263 @@
-# Deployment Guide
+# Railway Deployment Guide
 
-This guide will help you deploy the Event Finder application to production.
+This guide will walk you through deploying both the frontend and backend of your Total Wireless Landing Page to Railway.
 
 ## Prerequisites
 
-- Google Maps API key with the following APIs enabled:
-  - Geocoding API
-  - Distance Matrix API
-- PostgreSQL database (local or cloud)
-- Node.js hosting platform
+1. **Railway Account**: Sign up at [railway.app](https://railway.app)
+2. **GitHub Repository**: Ensure your code is pushed to a GitHub repository
+3. **PostgreSQL Database**: You'll need a PostgreSQL database (Railway provides this)
 
-## Step 1: Set Up PostgreSQL Database
+## Step 1: Database Setup
 
-### Option A: Railway (Recommended)
+### 1.1 Create PostgreSQL Database on Railway
 
-1. Go to [Railway](https://railway.app/)
-2. Create a new project
-3. Add a PostgreSQL database
-4. Note down the connection details
+1. Go to your Railway dashboard
+2. Click "New Project"
+3. Select "Provision PostgreSQL"
+4. Note down the database credentials (you'll need these for environment variables)
 
-### Option B: Supabase
+### 1.2 Database Environment Variables
 
-1. Go to [Supabase](https://supabase.com/)
-2. Create a new project
-3. Go to Settings > Database
-4. Note down the connection details
-
-### Option C: Local PostgreSQL
-
-1. Install PostgreSQL locally
-2. Create a database named `event_finder`
-3. Run the schema: `psql -d event_finder -f backend/src/database/schema.sql`
-
-## Step 2: Deploy Backend
-
-### Option A: Railway (Recommended)
-
-1. Connect your GitHub repository to Railway
-2. Add the backend directory as a service
-3. Set environment variables:
-   ```
-   DB_HOST=your_railway_db_host
-   DB_PORT=5432
-   DB_NAME=railway
-   DB_USER=postgres
-   DB_PASSWORD=your_railway_db_password
-   GOOGLE_MAPS_API_KEY=your_google_maps_api_key
-   NODE_ENV=production
-   ```
-
-### Option B: Render
-
-1. Go to [Render](https://render.com/)
-2. Create a new Web Service
-3. Connect your GitHub repository
-4. Set build command: `cd backend && npm install && npm run build`
-5. Set start command: `cd backend && npm start`
-6. Configure environment variables
-
-### Option C: Heroku
-
-1. Install Heroku CLI
-2. Create a new Heroku app
-3. Add PostgreSQL addon
-4. Deploy using Git:
-   ```bash
-   heroku create your-app-name
-   heroku addons:create heroku-postgresql:hobby-dev
-   git push heroku main
-   ```
-
-## Step 3: Deploy Frontend
-
-### Option A: Vercel (Recommended)
-
-1. Go to [Vercel](https://vercel.com/)
-2. Import your GitHub repository
-3. Set the root directory to `frontend`
-4. Add environment variable:
-   ```
-   REACT_APP_API_URL=https://your-backend-url.com/api
-   ```
-
-### Option B: Netlify
-
-1. Go to [Netlify](https://netlify.com/)
-2. Connect your GitHub repository
-3. Set build command: `cd frontend && npm install && npm run build`
-4. Set publish directory: `frontend/build`
-5. Add environment variable for API URL
-
-## Step 4: Import Data
-
-After deploying the backend, you need to import your CSV data:
-
-1. SSH into your backend server or use the hosting platform's console
-2. Run the import script:
-   ```bash
-   npm run import-data
-   ```
-
-## Step 5: Configure Domain (Optional)
-
-1. Add a custom domain to your frontend deployment
-2. Update your backend CORS settings if needed
-3. Update the frontend API URL to use your custom domain
-
-## Environment Variables Reference
-
-### Backend (.env)
-```env
-# Database
-DB_HOST=your_db_host
-DB_PORT=5432
-DB_NAME=your_db_name
+You'll need these environment variables for your backend:
+```
 DB_USER=your_db_user
+DB_HOST=your_db_host
+DB_NAME=your_db_name
 DB_PASSWORD=your_db_password
+DB_PORT=5432
+```
 
-# Google Maps API
-GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+## Step 2: Backend Deployment
 
-# Server
+### 2.1 Create Railway Configuration for Backend
+
+Create a `railway.json` file in the `backend/` directory:
+
+```json
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "npm start",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 100,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  }
+}
+```
+
+### 2.2 Update Backend Package.json
+
+Ensure your `backend/package.json` has the correct build and start scripts:
+
+```json
+{
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "postinstall": "npm run build"
+  }
+}
+```
+
+### 2.3 Deploy Backend to Railway
+
+1. In Railway dashboard, click "New Service"
+2. Select "GitHub Repo"
+3. Connect your GitHub repository
+4. Set the root directory to `backend/`
+5. Add environment variables:
+   - `NODE_ENV=production`
+   - `PORT=3001`
+   - Database variables from Step 1.2
+6. Deploy the service
+
+### 2.4 Get Backend URL
+
+After deployment, note the generated URL (e.g., `https://your-backend.railway.app`)
+
+## Step 3: Frontend Deployment
+
+### 3.1 Create Railway Configuration for Frontend
+
+Create a `railway.json` file in the `frontend/` directory:
+
+```json
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "npm start",
+    "healthcheckPath": "/",
+    "healthcheckTimeout": 100,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  }
+}
+```
+
+### 3.2 Update Frontend Environment Variables
+
+Create a `.env.production` file in the `frontend/` directory:
+
+```
+REACT_APP_API_URL=https://your-backend.railway.app/api
+```
+
+### 3.3 Deploy Frontend to Railway
+
+1. In Railway dashboard, click "New Service"
+2. Select "GitHub Repo"
+3. Connect your GitHub repository
+4. Set the root directory to `frontend/`
+5. Add environment variables:
+   - `REACT_APP_API_URL=https://your-backend.railway.app/api`
+   - `NODE_ENV=production`
+6. Deploy the service
+
+## Step 4: Database Migration
+
+### 4.1 Run Database Schema
+
+After your backend is deployed, you need to set up the database schema:
+
+1. Go to your backend service in Railway
+2. Click on "Variables" tab
+3. Add a temporary script to run the schema:
+
+```bash
+# In Railway terminal or via SSH
+psql $DATABASE_URL -f src/database/schema.sql
+```
+
+### 4.2 Import Data (Optional)
+
+If you want to import your CSV data:
+
+```bash
+# Set up your data import script
+npm run import-data
+```
+
+## Step 5: Domain Configuration
+
+### 5.1 Custom Domain (Optional)
+
+1. In Railway dashboard, go to your frontend service
+2. Click "Settings" → "Domains"
+3. Add your custom domain
+4. Configure DNS records as instructed
+
+## Step 6: Environment Variables Summary
+
+### Backend Environment Variables
+```
+NODE_ENV=production
 PORT=3001
+DB_USER=your_db_user
+DB_HOST=your_db_host
+DB_NAME=your_db_name
+DB_PASSWORD=your_db_password
+DB_PORT=5432
+```
+
+### Frontend Environment Variables
+```
+REACT_APP_API_URL=https://your-backend.railway.app/api
 NODE_ENV=production
 ```
 
-### Frontend (.env)
-```env
-REACT_APP_API_URL=https://your-backend-url.com/api
-```
+## Step 7: Monitoring and Maintenance
+
+### 7.1 Health Checks
+
+Both services have health check endpoints:
+- Backend: `https://your-backend.railway.app/health`
+- Frontend: `https://your-frontend.railway.app/`
+
+### 7.2 Logs
+
+Monitor your application logs in the Railway dashboard:
+1. Go to your service
+2. Click "Deployments"
+3. View logs for debugging
+
+### 7.3 Scaling
+
+Railway automatically scales based on traffic, but you can:
+1. Go to service settings
+2. Adjust scaling parameters
+3. Set resource limits
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **CORS Errors**: Make sure your backend CORS settings include your frontend domain
-2. **Database Connection**: Verify your database connection string and credentials
-3. **Google Maps API**: Ensure your API key has the correct permissions and billing is set up
-4. **Import Failures**: Check that your CSV files are in the correct format and location
+1. **Build Failures**
+   - Check that all dependencies are in `package.json`
+   - Ensure TypeScript compilation works locally
+   - Verify Node.js version compatibility
 
-### Debugging
+2. **Database Connection Issues**
+   - Verify environment variables are correct
+   - Check database is accessible from Railway
+   - Ensure SSL configuration is correct
 
-1. Check your hosting platform's logs
-2. Verify environment variables are set correctly
-3. Test your API endpoints using a tool like Postman
-4. Check browser console for frontend errors
+3. **CORS Issues**
+   - Verify frontend URL is allowed in backend CORS settings
+   - Check API URL configuration
+
+4. **Environment Variables**
+   - Ensure all variables are set in Railway dashboard
+   - Check variable names match your code
+   - Verify no typos in values
+
+### Debugging Commands
+
+```bash
+# Check backend logs
+railway logs --service backend
+
+# Check frontend logs
+railway logs --service frontend
+
+# Connect to database
+railway connect --service database
+
+# SSH into service
+railway shell --service backend
+```
 
 ## Security Considerations
 
-1. **API Keys**: Never commit API keys to version control
-2. **Database**: Use strong passwords and consider connection pooling
-3. **CORS**: Only allow necessary origins
-4. **Rate Limiting**: Consider adding rate limiting to your API
-5. **HTTPS**: Always use HTTPS in production
+1. **Environment Variables**: Never commit sensitive data to Git
+2. **Database**: Use strong passwords and limit access
+3. **CORS**: Configure properly for production domains
+4. **HTTPS**: Railway provides SSL certificates automatically
 
-## Monitoring
+## Cost Optimization
 
-1. Set up logging for your backend
-2. Monitor database performance
-3. Track API usage and errors
-4. Set up alerts for downtime
+1. **Free Tier**: Railway offers a free tier with limitations
+2. **Resource Limits**: Set appropriate limits for your needs
+3. **Auto-scaling**: Configure based on actual usage
+4. **Monitoring**: Use Railway's built-in monitoring tools
 
-## Scaling Considerations
+## Next Steps
 
-1. **Database**: Consider read replicas for high traffic
-2. **Caching**: Add Redis for caching frequently accessed data
-3. **CDN**: Use a CDN for static assets
-4. **Load Balancing**: Consider multiple backend instances 
+1. Set up CI/CD pipeline with GitHub Actions
+2. Configure monitoring and alerting
+3. Set up backup strategies for database
+4. Implement proper logging and error tracking
+5. Consider using Railway's preview deployments for testing
+
+## Support
+
+- Railway Documentation: [docs.railway.app](https://docs.railway.app)
+- Railway Discord: [discord.gg/railway](https://discord.gg/railway)
+- GitHub Issues: For code-specific issues 

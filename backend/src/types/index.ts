@@ -19,7 +19,6 @@ export interface LocationSearch {
   zip?: string;
   city?: string;
   state?: string;
-  radius?: number;
 }
 
 export interface EventSearchResult {
