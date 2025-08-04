@@ -9,6 +9,7 @@
     "build": "tsc",
     "postinstall": "npm run build",
     "import-data": "ts-node src/scripts/importData.ts",
+    "update-coordinates": "ts-node src/scripts/updateCoordinates.ts",
     "remove-duplicates:stats": "ts-node src/scripts/removeDuplicates.ts stats",
     "remove-duplicates:remove": "ts-node src/scripts/removeDuplicates.ts remove",
     "test": "echo \"Error: no test specified\" && exit 1"
