@@ -104,7 +104,7 @@ const HomePage: React.FC = () => {
             {/* Logo */}
             <div className="flex items-center justify-center w-full">
               <img 
-                src="/verizontotallogo.png" 
+                src="/totalwireless_logo.png" 
                 alt="Total Wireless" 
                 className="h-28 w-auto"
                 style={{ height: '108px' }}
