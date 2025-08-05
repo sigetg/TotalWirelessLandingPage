@@ -2,6 +2,10 @@
 
 A React application that allows users to find nearby events based on their location. The app features a modern UI styled similarly to Total Wireless, with geolocation capabilities and driving distance calculations.
 
+## 🌐 Live Demo
+
+**Visit the live application:** [https://total-events.up.railway.app/](https://total-events.up.railway.app/)
+
 ## Features
 
 - **Location-based Search**: Search by address, zip code, or city/state
@@ -9,6 +13,8 @@ A React application that allows users to find nearby events based on their locat
 - **Event Filtering**: Filter by event type and date
 - **Responsive Design**: Mobile-friendly interface
 - **Real-time Results**: Instant search results with loading states
+- **Bilingual Support**: English and Spanish language options
+- **Tabbed Search Interface**: Choose between zip code, full address, or city/state search methods
 
 ## Tech Stack
 
@@ -115,23 +121,18 @@ The application will be available at:
 
 ## Deployment
 
-### Recommended Hosting Platforms
+### Current Deployment
 
-**For PostgreSQL:**
-- Railway (recommended) - Easy PostgreSQL hosting with automatic backups
-- Supabase - PostgreSQL with built-in auth and real-time features
-- Neon - Serverless PostgreSQL with branching
-
-**For the full application:**
-- Vercel (recommended) - Great for React apps with serverless functions
-- Railway - Full-stack deployment with PostgreSQL
-- Render - Simple deployment with PostgreSQL support
+The application is currently deployed on **Railway**:
+- **Live Site**: [https://total-events.up.railway.app/](https://total-events.up.railway.app/)
+- **Backend**: Railway with PostgreSQL database
+- **Frontend**: Railway static hosting
 
 ### Deployment Steps
 
 1. **Set up PostgreSQL database** on your chosen platform
 2. **Deploy the backend** to your hosting platform
-3. **Deploy the frontend** to Vercel or similar
+3. **Deploy the frontend** to Railway or similar
 4. **Configure environment variables** in your hosting platform
 5. **Import your data** using the import script
 
@@ -163,14 +164,6 @@ TotalWirelessLandingPage/
     ├── New_York.csv
     └── San_Antonio.csv
 ```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
 
 ## License
 
