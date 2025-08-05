@@ -32,6 +32,49 @@ Thumbs.db
 *.sublime-workspace
 *.sublime-project
 
+# Cache directories
+.cache/
+frontend/.cache/
+backend/.cache/
+node_modules/.cache/
+frontend/node_modules/.cache/
+backend/node_modules/.cache/
+
+# Vite cache
+.vite/
+frontend/.vite/
+backend/.vite/
+
+# React/Next.js cache
+.next/
+frontend/.next/
+backend/.next/
+
+# Parcel cache
+.parcel-cache/
+frontend/.parcel-cache/
+backend/.parcel-cache/
+
+# Webpack cache
+.webpack/
+frontend/.webpack/
+backend/.webpack/
+
+# Misc cache files
+*.cache
+*.cache.*
+.cache.*/
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Coverage reports
+coverage/
+*.lcov
+
 # Misc
 *.local
 *.cache
