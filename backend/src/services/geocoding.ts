@@ -22,7 +22,7 @@ const MOCK_GEOCODING_DATA: Record<string, GeocodeResult> = {
 export class GeocodingService {
   static async geocodeAddress(address: string): Promise<GeocodeResult | null> {
     if (!GOOGLE_MAPS_API_KEY) {
-      throw new Error('Google Maps API key is not configured on the server.');
+      throw new Error('Google Maps API key is required but not configured. Please set the GOOGLE_MAPS_API_KEY environment variable.');
     }
 
     try {
@@ -45,10 +45,29 @@ export class GeocodingService {
         };
       }
 
-      return null;
+      if (response.data.status === 'ZERO_RESULTS') {
+        return null;
+      }
+
+      // Handle specific Google Maps API errors
+      switch (response.data.status) {
+        case 'OVER_QUERY_LIMIT':
+          throw new Error('Google Maps API quota exceeded. Please try again later.');
+        case 'REQUEST_DENIED':
+          throw new Error('Google Maps API request was denied. Please check your API key and billing settings.');
+        case 'INVALID_REQUEST':
+          throw new Error('Invalid request to Google Maps API. Please check the address format.');
+        default:
+          throw new Error(`Google Maps API error: ${response.data.status}`);
+      }
     } catch (error) {
-      console.error('Geocoding error:', error);
-      return null;
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 403) {
+          throw new Error('Google Maps API key is invalid or has insufficient permissions. Please check your API key and billing settings.');
+        }
+        throw new Error(`Network error while accessing Google Maps API: ${error.message}`);
+      }
+      throw error;
     }
   }
 
@@ -57,7 +76,7 @@ export class GeocodingService {
     destinations: string[]
   ): Promise<DistanceMatrixResponse | null> {
     if (!GOOGLE_MAPS_API_KEY) {
-      throw new Error('Google Maps API key is not configured on the server.');
+      throw new Error('Google Maps API key is required but not configured. Please set the GOOGLE_MAPS_API_KEY environment variable.');
     }
 
     try {
@@ -75,6 +94,12 @@ export class GeocodingService {
 
       return response.data;
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 403) {
+          throw new Error('Google Maps API key is invalid or has insufficient permissions for Distance Matrix API.');
+        }
+        throw new Error(`Network error while accessing Google Maps Distance Matrix API: ${error.message}`);
+      }
       console.error('Distance matrix error:', error);
       return null;
     }

@@ -75,21 +75,21 @@ export class EventService {
     if (address) {
       const geocodeResult = await GeocodingService.geocodeAddress(address);
       if (!geocodeResult) {
-        throw new Error('Could not geocode the provided address');
+        throw new Error(`Could not find location for address: "${address}". Please try a different address or use a zip code.`);
       }
       userLat = geocodeResult.latitude;
       userLon = geocodeResult.longitude;
     } else if (zip) {
       const geocodeResult = await GeocodingService.geocodeAddress(zip);
       if (!geocodeResult) {
-        throw new Error('Could not geocode the provided zip code');
+        throw new Error(`Could not find location for zip code: "${zip}". Please check the zip code and try again.`);
       }
       userLat = geocodeResult.latitude;
       userLon = geocodeResult.longitude;
     } else if (city && state) {
       const geocodeResult = await GeocodingService.geocodeAddress(`${city}, ${state}`);
       if (!geocodeResult) {
-        throw new Error('Could not geocode the provided city and state');
+        throw new Error(`Could not find location for "${city}, ${state}". Please check the city and state names and try again.`);
       }
       userLat = geocodeResult.latitude;
       userLon = geocodeResult.longitude;
@@ -119,7 +119,7 @@ export class EventService {
           event_date > $3 
           OR (event_date = $3 AND event_time > $4)
         )
-      ORDER BY event_date, event_time, distance
+      ORDER BY distance, event_date, event_time
       LIMIT 6
     `;
 
@@ -198,6 +198,17 @@ export class EventService {
         await pool.query(updateQuery, [geocodeResult.latitude, geocodeResult.longitude, event.id]);
         console.log(`Updated geocoding for event ${event.id}`);
       }
+    }
+  }
+
+  static async testGoogleMapsAPI(): Promise<boolean> {
+    try {
+      // Test with a simple address that should always work
+      const result = await GeocodingService.geocodeAddress('New York, NY');
+      return result !== null;
+    } catch (error) {
+      console.error('Google Maps API test failed:', error);
+      return false;
     }
   }
 } 

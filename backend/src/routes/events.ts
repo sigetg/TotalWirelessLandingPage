@@ -70,4 +70,23 @@ router.post('/update-geocoding', async (req: Request, res: Response) => {
   }
 });
 
+// Health check for Google Maps API configuration
+router.get('/health/maps-api', async (req: Request, res: Response) => {
+  try {
+    // Test geocoding with a simple address
+    const testResult = await EventService.testGoogleMapsAPI();
+    res.json({ 
+      status: 'ok', 
+      googleMapsApiConfigured: true,
+      testResult: testResult ? 'success' : 'failed'
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      status: 'error', 
+      googleMapsApiConfigured: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
 export default router; 

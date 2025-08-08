@@ -203,9 +203,11 @@ const HomePage: React.FC = () => {
               ) : error ? (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                   <p className="text-red-700">
-                    {error instanceof Error
-                      ? translations[lang].error
-                      : (error as any)?.response?.data?.error || translations[lang].error}
+                    {error instanceof Error && (error as any)?.response?.data?.error
+                      ? (error as any).response.data.error
+                      : error instanceof Error
+                      ? error.message
+                      : translations[lang].error}
                   </p>
                 </div>
               ) : searchResults && searchResults.length > 0 ? (
