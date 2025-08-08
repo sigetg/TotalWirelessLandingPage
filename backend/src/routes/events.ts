@@ -7,7 +7,11 @@ const router = Router();
 // Get all events
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const events = await EventService.getAllEvents();
+    // Extract optional user location from query parameters
+    const userLat = req.query.lat ? parseFloat(req.query.lat as string) : undefined;
+    const userLon = req.query.lon ? parseFloat(req.query.lon as string) : undefined;
+    
+    const events = await EventService.getAllEvents(userLat, userLon);
     res.json(events);
   } catch (error) {
     console.error('Error fetching events:', error);
@@ -19,7 +23,12 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/type/:eventType', async (req: Request, res: Response) => {
   try {
     const { eventType } = req.params;
-    const events = await EventService.getEventsByType(eventType);
+    
+    // Extract optional user location from query parameters
+    const userLat = req.query.lat ? parseFloat(req.query.lat as string) : undefined;
+    const userLon = req.query.lon ? parseFloat(req.query.lon as string) : undefined;
+    
+    const events = await EventService.getEventsByType(eventType, userLat, userLon);
     res.json(events);
   } catch (error) {
     console.error('Error fetching events by type:', error);

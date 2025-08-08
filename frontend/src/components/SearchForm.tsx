@@ -8,11 +8,12 @@ interface SearchFormProps {
   isLoading?: boolean;
   lang: 'en' | 'es';
   translations: any;
+  userLocation?: { lat: number; lon: number } | null;
 }
 
 type SearchMethod = 'zip' | 'address' | 'cityState';
 
-const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, lang, translations }) => {
+const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, lang, translations, userLocation }) => {
   const [activeTab, setActiveTab] = useState<SearchMethod>('zip');
   
   const {
@@ -84,7 +85,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, la
               ? 'bg-white text-red-600 shadow-sm'
               : 'text-gray-600 hover:text-gray-900'
           }`}
-          style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+
         >
           {lang === 'es' ? 'Código Postal' : 'Zip Code'}
         </button>
@@ -96,7 +97,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, la
               ? 'bg-white text-red-600 shadow-sm'
               : 'text-gray-600 hover:text-gray-900'
           }`}
-          style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+
         >
           {lang === 'es' ? 'Dirección Completa' : 'Full Address'}
         </button>
@@ -108,7 +109,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, la
               ? 'bg-white text-red-600 shadow-sm'
               : 'text-gray-600 hover:text-gray-900'
           }`}
-          style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+
         >
           {lang === 'es' ? 'Ciudad y Estado' : 'City & State'}
         </button>
@@ -127,7 +128,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, la
               id="zip"
               placeholder={lang === 'es' ? 'Ingrese el código postal' : 'Enter zip code'}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-              style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+    
             />
           </div>
         )}
@@ -147,7 +148,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, la
                   id="address"
                   placeholder={lang === 'es' ? 'Ingrese su dirección completa' : 'Enter your full address'}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                  style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+        
                 />
               </div>
             </div>
@@ -162,7 +163,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, la
                   id="city"
                   placeholder={lang === 'es' ? 'Ingrese el nombre de la ciudad' : 'Enter city name'}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                  style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+        
                 />
               </div>
               <div>
@@ -173,7 +174,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, la
                   {...register('state')}
                   id="state"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                  style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+        
                 >
                   <option value="">{lang === 'es' ? 'Seleccione estado' : 'Select State'}</option>
                   <option value="AL">Alabama</option>
@@ -245,7 +246,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, la
                 id="city"
                 placeholder={lang === 'es' ? 'Ingrese el nombre de la ciudad' : 'Enter city name'}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+      
               />
             </div>
             <div>
@@ -256,7 +257,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, la
                 {...register('state')}
                 id="state"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-                style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+      
               >
                 <option value="">{lang === 'es' ? 'Seleccione estado' : 'Select State'}</option>
                 <option value="AL">Alabama</option>
@@ -319,7 +320,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading = false, la
           type="submit"
           disabled={isLoading || isSubmitDisabled()}
           className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-bold py-4 px-8 rounded-xl transition-colors duration-200 flex items-center justify-center space-x-2 text-lg shadow-lg"
-          style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+
         >
           {isLoading ? (
             <>

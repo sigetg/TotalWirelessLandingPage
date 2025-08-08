@@ -12,6 +12,96 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>TOTAL Events</title>
+    
+    <!-- Preload critical font files for better performance -->
+    <link rel="preload" href="/fonts/GalanoGrotesqueAlt-Regular.otf" as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="/fonts/GalanoGrotesqueAlt-Medium.otf" as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="/fonts/GalanoGrotesqueAlt-Bold.otf" as="font" type="font/otf" crossorigin />
+
+    <!-- App font: Galano Grotesque Alt (self-hosted in /public/fonts). -->
+    <style>
+      /* Preload the primary font for better performance */
+      @font-face {
+        font-family: "Galano Grotesque Alt";
+        src: url("/fonts/GalanoGrotesqueAlt-Regular.otf") format("opentype");
+        font-weight: 80;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Galano Grotesque Alt";
+        src: url("/fonts/GalanoGrotesqueAlt-Medium.otf") format("opentype");
+        font-weight: 100;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Galano Grotesque Alt";
+        src: url("/fonts/GalanoGrotesqueAlt-SemiBold.otf") format("opentype");
+        font-weight: 180;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Galano Grotesque Alt";
+        src: url("/fonts/GalanoGrotesqueAlt-Bold.otf") format("opentype");
+        font-weight: 200;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      /* Also provide standard CSS weight mappings for better compatibility */
+      @font-face {
+        font-family: "Galano Grotesque Alt";
+        src: url("/fonts/GalanoGrotesqueAlt-Regular.otf") format("opentype");
+        font-weight: 300;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Galano Grotesque Alt";
+        src: url("/fonts/GalanoGrotesqueAlt-Regular.otf") format("opentype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Galano Grotesque Alt";
+        src: url("/fonts/GalanoGrotesqueAlt-Medium.otf") format("opentype");
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Galano Grotesque Alt";
+        src: url("/fonts/GalanoGrotesqueAlt-SemiBold.otf") format("opentype");
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Galano Grotesque Alt";
+        src: url("/fonts/GalanoGrotesqueAlt-Bold.otf") format("opentype");
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Galano Grotesque Alt";
+        src: url("/fonts/GalanoGrotesqueAlt-Bold.otf") format("opentype");
+        font-weight: bold;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

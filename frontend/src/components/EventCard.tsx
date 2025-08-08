@@ -129,7 +129,7 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult, lang = 'en' }) => {
             className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors duration-200 text-base shadow-lg"
             onClick={() => window.open(getGoogleMapsUrl(), '_blank', 'noopener,noreferrer')}
             type="button"
-            style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+  
           >
             {translations[lang].getDirections}
           </button>

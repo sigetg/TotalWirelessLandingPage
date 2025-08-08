@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import SearchForm from '../components/SearchForm';
 import EventCard from '../components/EventCard';
@@ -45,6 +45,30 @@ const translations = {
 const HomePage: React.FC = () => {
   const [searchParams, setSearchParams] = useState<SearchFormData | null>(null);
   const [lang, setLang] = useState<'en' | 'es'>('en');
+  const [userLocation, setUserLocation] = useState<{ lat: number; lon: number } | null>(null);
+
+  // Get user's current location on component mount
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.log('Geolocation error:', error);
+          // Don't show error to user, just fall back to UTC
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000, // 5 minutes
+        }
+      );
+    }
+  }, []);
 
   const {
     data: searchResults,
@@ -52,7 +76,7 @@ const HomePage: React.FC = () => {
     error,
     refetch,
   } = useQuery<EventSearchResult[]>({
-    queryKey: ['events', searchParams],
+    queryKey: ['events', searchParams, userLocation],
     queryFn: () => {
       if (!searchParams) return Promise.resolve([]);
       
@@ -120,7 +144,7 @@ const HomePage: React.FC = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: 'url(/hero-banner-background.png)',
+            backgroundImage: 'url(/blue_ad.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -128,10 +152,10 @@ const HomePage: React.FC = () => {
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-white drop-shadow-lg" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+            <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-white drop-shadow-lg">
               {translations[lang].findEvents}
             </h1>
-            <p className="text-xl mb-8 text-white drop-shadow-lg" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+            <p className="text-xl mb-8 text-white drop-shadow-lg">
               {translations[lang].discover}
             </p>
           </div>
@@ -146,17 +170,23 @@ const HomePage: React.FC = () => {
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: 'url(/hero-background.png)',
+              backgroundImage: 'url(/aqua_ad.jpg)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
           />
           
           <div className="relative z-10">
-            <h2 className="text-2xl font-bold text-slate-900 mb-4 drop-shadow-lg" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+            <h2 className="text-2xl font-bold text-slate-900 mb-4 drop-shadow-lg">
               {lang === 'es' ? 'Buscar eventos' : 'Find Events'}
             </h2>
-            <SearchForm onSearch={handleSearch} isLoading={searchParams ? isLoading : false} lang={lang} translations={translations[lang]} />
+            <SearchForm 
+              onSearch={handleSearch} 
+              isLoading={searchParams ? isLoading : false} 
+              lang={lang} 
+              translations={translations[lang]}
+              userLocation={userLocation}
+            />
           </div>
         </div>
 

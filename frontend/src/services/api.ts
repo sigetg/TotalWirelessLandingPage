@@ -12,14 +12,22 @@ const api = axios.create({
 
 export const eventService = {
   // Get all events
-  getAllEvents: async (): Promise<Event[]> => {
-    const response = await api.get('/events');
+  getAllEvents: async (userLat?: number, userLon?: number): Promise<Event[]> => {
+    const params = new URLSearchParams();
+    if (userLat !== undefined) params.append('lat', userLat.toString());
+    if (userLon !== undefined) params.append('lon', userLon.toString());
+    
+    const response = await api.get(`/events?${params.toString()}`);
     return response.data;
   },
 
   // Get events by type
-  getEventsByType: async (eventType: string): Promise<Event[]> => {
-    const response = await api.get(`/events/type/${eventType}`);
+  getEventsByType: async (eventType: string, userLat?: number, userLon?: number): Promise<Event[]> => {
+    const params = new URLSearchParams();
+    if (userLat !== undefined) params.append('lat', userLat.toString());
+    if (userLon !== undefined) params.append('lon', userLon.toString());
+    
+    const response = await api.get(`/events/type/${eventType}?${params.toString()}`);
     return response.data;
   },
 
