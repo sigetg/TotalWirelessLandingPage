@@ -38,10 +38,19 @@ export class GeocodingService {
 
       if (response.data.status === 'OK' && response.data.results.length > 0) {
         const result = response.data.results[0];
+        let city: string | undefined;
+        let zip: string | undefined;
+        for (const comp of result.address_components || []) {
+          if (!city && comp.types.includes('locality')) city = comp.long_name;
+          if (!city && comp.types.includes('sublocality')) city = comp.long_name;
+          if (!zip && comp.types.includes('postal_code')) zip = comp.long_name;
+        }
         return {
           latitude: result.geometry.location.lat,
           longitude: result.geometry.location.lng,
           formatted_address: result.formatted_address,
+          city,
+          zip,
         };
       }
 

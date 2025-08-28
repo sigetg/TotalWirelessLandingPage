@@ -1,5 +1,7 @@
 export interface Event {
   id: number;
+  start_date?: Date;
+  end_date?: Date;
   event_date: Date;
   event_time: string;
   event_type: string;
@@ -32,6 +34,8 @@ export interface GeocodeResult {
   latitude: number;
   longitude: number;
   formatted_address: string;
+  city?: string;
+  zip?: string;
 }
 
 export interface GoogleMapsResponse {
@@ -43,6 +47,11 @@ export interface GoogleMapsResponse {
       };
     };
     formatted_address: string;
+    address_components: Array<{
+      long_name: string;
+      short_name: string;
+      types: string[];
+    }>;
   }>;
   status: string;
 }

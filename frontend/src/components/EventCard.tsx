@@ -20,6 +20,15 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult, lang = 'en' }) => {
     });
   };
 
+  const formatShortDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
   const formatTime = (timeString: string) => {
     return timeString;
   };
@@ -82,7 +91,15 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult, lang = 'en' }) => {
           {/* Date and Time */}
           <div className="flex items-center space-x-2 text-gray-600">
             <Calendar className="h-4 w-4" />
-            <span className="text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>{formatDate(event.event_date)}</span>
+            {event.start_date && event.end_date ? (
+              <span className="text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+                {formatShortDate(event.start_date)} — {formatShortDate(event.end_date)}
+              </span>
+            ) : (
+              <span className="text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+                {formatDate(event.event_date)}
+              </span>
+            )}
           </div>
 
           <div className="flex items-center space-x-2 text-gray-600">

@@ -1,6 +1,8 @@
 -- Create events table
 CREATE TABLE IF NOT EXISTS events (
   id SERIAL PRIMARY KEY,
+  start_date DATE,
+  end_date DATE,
   event_date DATE NOT NULL,
   event_time VARCHAR(20) NOT NULL,
   event_type VARCHAR(100) NOT NULL,
@@ -20,6 +22,8 @@ CREATE INDEX IF NOT EXISTS idx_events_location ON events(latitude, longitude);
 CREATE INDEX IF NOT EXISTS idx_events_type ON events(event_type);
 CREATE INDEX IF NOT EXISTS idx_events_date ON events(event_date);
 CREATE INDEX IF NOT EXISTS idx_events_zip ON events(zip);
+CREATE INDEX IF NOT EXISTS idx_events_start_date ON events(start_date);
+CREATE INDEX IF NOT EXISTS idx_events_end_date ON events(end_date);
 
 -- Create function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()

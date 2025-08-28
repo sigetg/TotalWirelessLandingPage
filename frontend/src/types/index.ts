@@ -1,5 +1,7 @@
 export interface Event {
   id: number;
+  start_date?: string;
+  end_date?: string;
   event_date: string;
   event_time: string;
   event_type: string;

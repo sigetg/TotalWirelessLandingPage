@@ -20,18 +20,29 @@ export class EventService {
     const query = `
       SELECT * FROM events 
       WHERE (
-        event_date > $1 
-        OR (event_date = $1 AND event_time > $2)
+        -- New range-based logic: show events where today is within [start_date, end_date]
+        (start_date IS NOT NULL AND end_date IS NOT NULL AND $1 BETWEEN start_date AND end_date)
+        OR
+        -- Fallback to single-day logic for legacy rows
+        (start_date IS NULL AND end_date IS NULL AND (
+          event_date > $1 OR (event_date = $1 AND event_time > $2)
+        ))
       )
-      ORDER BY event_date, event_time
+      ORDER BY COALESCE(start_date, event_date), event_time
     `;
     const result = await pool.query(query, [currentDate, currentTime]);
     
     // Double-check events are in the future using timezone-aware comparison
     const events = result.rows;
-    return events.filter(event => 
-      TimezoneService.isEventInFuture(event.event_date, event.event_time, timeZoneId)
-    );
+    return events.filter(event => {
+      if (event.start_date && event.end_date) {
+        const todayDate = new Date(`${currentDate}T00:00:00`);
+        const start = new Date(event.start_date);
+        const end = new Date(event.end_date);
+        return todayDate >= start && todayDate <= end;
+      }
+      return TimezoneService.isEventInFuture(event.event_date, event.event_time, timeZoneId);
+    });
   }
 
   static async getEventsByType(eventType: string, userLat?: number, userLon?: number): Promise<Event[]> {
@@ -51,18 +62,27 @@ export class EventService {
       SELECT * FROM events 
       WHERE event_type = $1 
         AND (
-          event_date > $2 
-          OR (event_date = $2 AND event_time > $3)
+          (start_date IS NOT NULL AND end_date IS NOT NULL AND $2 BETWEEN start_date AND end_date)
+          OR
+          (start_date IS NULL AND end_date IS NULL AND (
+            event_date > $2 OR (event_date = $2 AND event_time > $3)
+          ))
         )
-      ORDER BY event_date, event_time
+      ORDER BY COALESCE(start_date, event_date), event_time
     `;
     const result = await pool.query(query, [eventType, currentDate, currentTime]);
     
     // Double-check events are in the future using timezone-aware comparison
     const events = result.rows;
-    return events.filter(event => 
-      TimezoneService.isEventInFuture(event.event_date, event.event_time, timeZoneId)
-    );
+    return events.filter(event => {
+      if (event.start_date && event.end_date) {
+        const todayDate = new Date(`${currentDate}T00:00:00`);
+        const start = new Date(event.start_date);
+        const end = new Date(event.end_date);
+        return todayDate >= start && todayDate <= end;
+      }
+      return TimezoneService.isEventInFuture(event.event_date, event.event_time, timeZoneId);
+    });
   }
 
   static async searchEventsByLocation(search: LocationSearch): Promise<EventSearchResult[]> {
@@ -116,46 +136,46 @@ export class EventService {
       WHERE latitude IS NOT NULL 
         AND longitude IS NOT NULL
         AND (
-          event_date > $3 
-          OR (event_date = $3 AND event_time > $4)
+          (start_date IS NOT NULL AND end_date IS NOT NULL AND $3 BETWEEN start_date AND end_date)
+          OR
+          (start_date IS NULL AND end_date IS NULL AND (
+            event_date > $3 OR (event_date = $3 AND event_time > $4)
+          ))
         )
-      ORDER BY distance, event_date, event_time
-      LIMIT 6
+      ORDER BY distance, COALESCE(start_date, event_date), event_time
+      LIMIT 100
     `;
 
     const result = await pool.query(query, [userLat, userLon, currentDate, currentTime]);
-    
-    // Get driving distances for the closest events
-    const events = result.rows;
-    const eventSearchResults: EventSearchResult[] = [];
+    const candidates = result.rows.filter(event => {
+      if (event.start_date && event.end_date) {
+        const todayDate = new Date(`${currentDate}T00:00:00`);
+        const start = new Date(event.start_date);
+        const end = new Date(event.end_date);
+        return todayDate >= start && todayDate <= end;
+      }
+      return TimezoneService.isEventInFuture(event.event_date, event.event_time, timeZoneId);
+    });
 
-    if (events.length > 0) {
+    const topSix = candidates.slice(0, 6);
+
+    const eventSearchResults: EventSearchResult[] = topSix.map((event) => ({
+      event,
+      distance: event.distance,
+    }));
+
+    if (topSix.length > 0) {
       const origins = [`${userLat},${userLon}`];
-      const destinations = events.map(event => `${event.latitude},${event.longitude}`);
-      
+      const destinations = topSix.map(event => `${event.latitude},${event.longitude}`);
       const distanceMatrix = await GeocodingService.getDistanceMatrix(origins, destinations);
-      
-      events.forEach((event, index) => {
-        // Double-check that the event is in the future using the timezone
-        const isInFuture = TimezoneService.isEventInFuture(event.event_date, event.event_time, timeZoneId);
-        
-        if (isInFuture) {
-          const searchResult: EventSearchResult = {
-            event,
-            distance: event.distance,
-          };
-
-          if (distanceMatrix && distanceMatrix.rows[0]?.elements[index]) {
-            const element = distanceMatrix.rows[0].elements[index];
-            if (element.status === 'OK') {
-              searchResult.driving_distance = element.distance?.value;
-              searchResult.driving_duration = element.duration?.value;
-            }
+      if (distanceMatrix && distanceMatrix.rows[0]?.elements) {
+        distanceMatrix.rows[0].elements.forEach((element, index) => {
+          if (element.status === 'OK') {
+            eventSearchResults[index].driving_distance = element.distance?.value;
+            eventSearchResults[index].driving_duration = element.duration?.value;
           }
-
-          eventSearchResults.push(searchResult);
-        }
-      });
+        });
+      }
     }
 
     return eventSearchResults;
