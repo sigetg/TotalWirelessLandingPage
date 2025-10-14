@@ -2,6 +2,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import SearchForm from '../components/SearchForm';
 import EventCard from '../components/EventCard';
+import AdminLoginModal from '../components/AdminLoginModal';
+import AdminDataManager from '../components/AdminDataManager';
 import { eventService } from '../services/api';
 import { SearchFormData, EventSearchResult } from '../types';
 
@@ -46,6 +48,8 @@ const HomePage: React.FC = () => {
   const [searchParams, setSearchParams] = useState<SearchFormData | null>(null);
   const [lang, setLang] = useState<'en' | 'es'>('en');
   const [userLocation, setUserLocation] = useState<{ lat: number; lon: number } | null>(null);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [showAdminManager, setShowAdminManager] = useState(false);
 
   // Get user's current location on component mount
   useEffect(() => {
@@ -105,6 +109,15 @@ const HomePage: React.FC = () => {
     }
   }, []);
 
+  const handleAdminLoginSuccess = () => {
+    setShowAdminLogin(false);
+    setShowAdminManager(true);
+  };
+
+  const handleCloseAdminManager = () => {
+    setShowAdminManager(false);
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Top Bar */}
@@ -140,13 +153,11 @@ const HomePage: React.FC = () => {
 
       {/* Hero Section */}
       <section className="rounded-2xl shadow-xl mx-4 sm:mx-6 lg:mx-8 my-8 relative overflow-hidden">
-        {/* Background Image */}
+        {/* Background Color */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0"
           style={{
-            backgroundImage: 'url(/blue_ad.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundColor: '#212132',
           }}
         />
         
@@ -166,13 +177,11 @@ const HomePage: React.FC = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Section */}
         <div className="mb-8 rounded-2xl shadow-xl p-8 relative overflow-hidden">
-          {/* Background Image */}
+          {/* Background Color */}
           <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0"
             style={{
-              backgroundImage: 'url(/aqua_ad.jpg)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              backgroundColor: '#E0FFFF',
             }}
           />
           
@@ -232,9 +241,28 @@ const HomePage: React.FC = () => {
       {/* Footer */}
       <footer className="bg-slate-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
+          <div className="flex justify-center">
+            <button
+              onClick={() => setShowAdminLogin(true)}
+              className="text-sm text-gray-400 hover:text-white transition-colors"
+            >
+              Admin Login
+            </button>
+          </div>
         </div>
       </footer>
+
+      {/* Admin Modals */}
+      <AdminLoginModal
+        isOpen={showAdminLogin}
+        onClose={() => setShowAdminLogin(false)}
+        onLoginSuccess={handleAdminLoginSuccess}
+      />
+      
+      <AdminDataManager
+        isOpen={showAdminManager}
+        onClose={handleCloseAdminManager}
+      />
     </div>
   );
 };

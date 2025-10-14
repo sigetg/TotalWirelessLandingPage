@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Event, LocationSearch, EventSearchResult } from '../types';
+import { Event, LocationSearch, EventSearchResult, EventUpdate, AdminLoginResponse, BulkUploadResponse } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
@@ -40,6 +40,36 @@ export const eventService = {
   // Add new event
   addEvent: async (event: Omit<Event, 'id' | 'created_at' | 'updated_at'>): Promise<Event> => {
     const response = await api.post('/events', event);
+    return response.data;
+  },
+
+  // Admin login
+  adminLogin: async (password: string): Promise<AdminLoginResponse> => {
+    const response = await api.post('/events/admin/login', { password });
+    return response.data;
+  },
+
+  // Update event
+  updateEvent: async (id: number, event: EventUpdate): Promise<Event> => {
+    const response = await api.put(`/events/${id}`, event);
+    return response.data;
+  },
+
+  // Delete event
+  deleteEvent: async (id: number): Promise<void> => {
+    await api.delete(`/events/${id}`);
+  },
+
+  // Bulk upload CSV
+  bulkUploadEvents: async (csvFile: File): Promise<BulkUploadResponse> => {
+    const formData = new FormData();
+    formData.append('csvFile', csvFile);
+    
+    const response = await api.post('/events/admin/bulk-upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   },
 }; 
