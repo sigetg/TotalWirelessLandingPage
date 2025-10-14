@@ -34,7 +34,7 @@ export class EventService {
     
     // Double-check events are in the future using timezone-aware comparison
     const events = result.rows;
-    return events.filter(event => {
+    return events.filter((event: any) => {
       if (event.start_date && event.end_date) {
         const todayDate = new Date(`${currentDate}T00:00:00`);
         const end = new Date(event.end_date);
@@ -73,7 +73,7 @@ export class EventService {
     
     // Double-check events are in the future using timezone-aware comparison
     const events = result.rows;
-    return events.filter(event => {
+    return events.filter((event: any) => {
       if (event.start_date && event.end_date) {
         const todayDate = new Date(`${currentDate}T00:00:00`);
         const start = new Date(event.start_date);
@@ -165,7 +165,7 @@ export class EventService {
     const result = await pool.query(query, [userLat, userLon, currentDate, currentTime]);
     console.log(`📊 Database returned ${result.rows.length} candidate events`);
     
-    const candidates = result.rows.filter(event => {
+    const candidates = result.rows.filter((event: any) => {
       if (event.start_date && event.end_date) {
         const todayDate = new Date(`${currentDate}T00:00:00`);
         const end = new Date(event.end_date);
@@ -178,14 +178,14 @@ export class EventService {
 
     const topSix = candidates.slice(0, 6);
 
-    const eventSearchResults: EventSearchResult[] = topSix.map((event) => ({
+    const eventSearchResults: EventSearchResult[] = topSix.map((event: any) => ({
       event,
       distance: event.distance,
     }));
 
     if (topSix.length > 0) {
       const origins = [`${userLat},${userLon}`];
-      const destinations = topSix.map(event => `${event.latitude},${event.longitude}`);
+      const destinations = topSix.map((event: any) => `${event.latitude},${event.longitude}`);
       const distanceMatrix = await GeocodingService.getDistanceMatrix(origins, destinations);
       if (distanceMatrix && distanceMatrix.rows[0]?.elements) {
         distanceMatrix.rows[0].elements.forEach((element, index) => {
