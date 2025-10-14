@@ -20,8 +20,8 @@ export class EventService {
     const query = `
       SELECT * FROM events 
       WHERE (
-        -- New range-based logic: show events where today is within [start_date, end_date]
-        (start_date IS NOT NULL AND end_date IS NOT NULL AND $1 BETWEEN start_date AND end_date)
+        -- New range-based logic: show events where end_date is in the future
+        (start_date IS NOT NULL AND end_date IS NOT NULL AND end_date >= $1)
         OR
         -- Fallback to single-day logic for legacy rows
         (start_date IS NULL AND end_date IS NULL AND (
@@ -37,9 +37,8 @@ export class EventService {
     return events.filter(event => {
       if (event.start_date && event.end_date) {
         const todayDate = new Date(`${currentDate}T00:00:00`);
-        const start = new Date(event.start_date);
         const end = new Date(event.end_date);
-        return todayDate >= start && todayDate <= end;
+        return todayDate <= end;
       }
       return TimezoneService.isEventInFuture(event.event_date, event.event_time, timeZoneId);
     });
@@ -93,26 +92,35 @@ export class EventService {
 
     // Geocode the search location
     if (address) {
+      console.log(`📍 Geocoding address: "${address}"`);
       const geocodeResult = await GeocodingService.geocodeAddress(address);
       if (!geocodeResult) {
+        console.log(`❌ Geocoding failed for address: "${address}"`);
         throw new Error(`Could not find location for address: "${address}". Please try a different address or use a zip code.`);
       }
       userLat = geocodeResult.latitude;
       userLon = geocodeResult.longitude;
+      console.log(`✅ Geocoded to: ${userLat}, ${userLon}`);
     } else if (zip) {
+      console.log(`📍 Geocoding zip: "${zip}"`);
       const geocodeResult = await GeocodingService.geocodeAddress(zip);
       if (!geocodeResult) {
+        console.log(`❌ Geocoding failed for zip: "${zip}"`);
         throw new Error(`Could not find location for zip code: "${zip}". Please check the zip code and try again.`);
       }
       userLat = geocodeResult.latitude;
       userLon = geocodeResult.longitude;
+      console.log(`✅ Geocoded to: ${userLat}, ${userLon}`);
     } else if (city && state) {
+      console.log(`📍 Geocoding city/state: "${city}, ${state}"`);
       const geocodeResult = await GeocodingService.geocodeAddress(`${city}, ${state}`);
       if (!geocodeResult) {
+        console.log(`❌ Geocoding failed for: "${city}, ${state}"`);
         throw new Error(`Could not find location for "${city}, ${state}". Please check the city and state names and try again.`);
       }
       userLat = geocodeResult.latitude;
       userLon = geocodeResult.longitude;
+      console.log(`✅ Geocoded to: ${userLat}, ${userLon}`);
     } else {
       throw new Error('Please provide an address, zip code, or city and state');
     }
@@ -136,7 +144,7 @@ export class EventService {
       WHERE latitude IS NOT NULL 
         AND longitude IS NOT NULL
         AND (
-          (start_date IS NOT NULL AND end_date IS NOT NULL AND $3 BETWEEN start_date AND end_date)
+          (start_date IS NOT NULL AND end_date IS NOT NULL AND end_date >= $3)
           OR
           (start_date IS NULL AND end_date IS NULL AND (
             event_date > $3 OR (event_date = $3 AND event_time > $4)
@@ -146,13 +154,24 @@ export class EventService {
       LIMIT 100
     `;
 
+    console.log(`🔎 Querying database with:`, { 
+      userLat, 
+      userLon, 
+      currentDate, 
+      currentTime,
+      timeZoneId 
+    });
+    
     const result = await pool.query(query, [userLat, userLon, currentDate, currentTime]);
+    console.log(`📊 Database returned ${result.rows.length} candidate events`);
+    
     const candidates = result.rows.filter(event => {
       if (event.start_date && event.end_date) {
         const todayDate = new Date(`${currentDate}T00:00:00`);
-        const start = new Date(event.start_date);
         const end = new Date(event.end_date);
-        return todayDate >= start && todayDate <= end;
+        const isValid = todayDate <= end;
+        console.log(`📅 Event ${event.id} (${event.event_type}): ends ${event.end_date}, today: ${currentDate}, valid: ${isValid}`);
+        return isValid;
       }
       return TimezoneService.isEventInFuture(event.event_date, event.event_time, timeZoneId);
     });
@@ -230,5 +249,100 @@ export class EventService {
       console.error('Google Maps API test failed:', error);
       return false;
     }
+  }
+
+  static async updateEvent(id: number, eventData: Partial<Event>): Promise<Event> {
+    // Get current event to check if address changed
+    const currentEvent = await pool.query('SELECT * FROM events WHERE id = $1', [id]);
+    if (currentEvent.rows.length === 0) {
+      throw new Error('Event not found');
+    }
+
+    const current = currentEvent.rows[0];
+    let latitude = eventData.latitude;
+    let longitude = eventData.longitude;
+
+    // If address changed, geocode the new address
+    if (eventData.address || eventData.city || eventData.state || eventData.zip) {
+      const fullAddress = `${eventData.address || current.address}, ${eventData.city || current.city}, ${eventData.state || current.state} ${eventData.zip || current.zip}`;
+      const geocodeResult = await GeocodingService.geocodeAddress(fullAddress);
+      if (geocodeResult) {
+        latitude = geocodeResult.latitude;
+        longitude = geocodeResult.longitude;
+      }
+    }
+
+    const query = `
+      UPDATE events 
+      SET event_date = COALESCE($2, event_date),
+          event_time = COALESCE($3, event_time),
+          event_type = COALESCE($4, event_type),
+          address = COALESCE($5, address),
+          address2 = COALESCE($6, address2),
+          city = COALESCE($7, city),
+          state = COALESCE($8, state),
+          zip = COALESCE($9, zip),
+          latitude = COALESCE($10, latitude),
+          longitude = COALESCE($11, longitude),
+          start_date = COALESCE($12, start_date),
+          end_date = COALESCE($13, end_date),
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = $1
+      RETURNING *
+    `;
+
+    const values = [
+      id,
+      eventData.event_date,
+      eventData.event_time,
+      eventData.event_type,
+      eventData.address,
+      eventData.address2,
+      eventData.city,
+      eventData.state,
+      eventData.zip,
+      latitude,
+      longitude,
+      eventData.start_date,
+      eventData.end_date,
+    ];
+
+    const result = await pool.query(query, values);
+    return result.rows[0];
+  }
+
+  static async deleteEvent(id: number): Promise<void> {
+    const query = 'DELETE FROM events WHERE id = $1';
+    const result = await pool.query(query, [id]);
+    
+    if (result.rowCount === 0) {
+      throw new Error('Event not found');
+    }
+  }
+
+  static async bulkCreateEvents(events: Omit<Event, 'id' | 'created_at' | 'updated_at'>[]): Promise<Event[]> {
+    const createdEvents: Event[] = [];
+
+    for (const event of events) {
+      try {
+        // Geocode the address
+        const fullAddress = `${event.address}, ${event.city}, ${event.state} ${event.zip}`;
+        const geocodeResult = await GeocodingService.geocodeAddress(fullAddress);
+        
+        const eventWithCoords = {
+          ...event,
+          latitude: geocodeResult?.latitude || undefined,
+          longitude: geocodeResult?.longitude || undefined,
+        };
+
+        const createdEvent = await this.addEvent(eventWithCoords);
+        createdEvents.push(createdEvent);
+      } catch (error) {
+        console.error(`Error creating event for ${event.address}:`, error);
+        // Continue with other events even if one fails
+      }
+    }
+
+    return createdEvents;
   }
 } 
