@@ -11,7 +11,9 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult, lang = 'en' }) => {
   const { event, distance, driving_distance, driving_duration } = eventResult;
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+    // Parse date without timezone conversion by manually creating a local date
+    const [year, month, day] = dateString.split('T')[0].split('-');
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
     return date.toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
@@ -21,7 +23,9 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult, lang = 'en' }) => {
   };
 
   const formatShortDate = (dateString: string) => {
-    const date = new Date(dateString);
+    // Parse date without timezone conversion by manually creating a local date
+    const [year, month, day] = dateString.split('T')[0].split('-');
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
