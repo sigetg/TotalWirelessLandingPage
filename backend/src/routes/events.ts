@@ -3,6 +3,7 @@ import multer from 'multer';
 import { EventService } from '../services/eventService';
 import { CsvParserService, CsvEventData } from '../services/csvParser';
 import { LocationSearch } from '../types';
+import { authMiddleware, generateToken } from '../middleware/auth';
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -67,14 +68,43 @@ router.post('/search', async (req: Request, res: Response) => {
   }
 });
 
-// Add new event
-router.post('/', async (req: Request, res: Response) => {
+// Add new event (protected)
+router.post('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const event = await EventService.addEvent(req.body);
     res.status(201).json(event);
   } catch (error) {
     console.error('Error adding event:', error);
-    res.status(500).json({ error: 'Failed to add event' });
+    const message = error instanceof Error ? error.message : 'Failed to add event';
+    res.status(400).json({ error: message });
+  }
+});
+
+// Bulk add events with validation (all-or-nothing)
+router.post('/bulk', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { events } = req.body;
+
+    if (!events || !Array.isArray(events) || events.length === 0) {
+      return res.status(400).json({
+        success: false,
+        errors: [{ row: 0, address: '', error: 'No events provided' }]
+      });
+    }
+
+    const result = await EventService.bulkAddEventsWithValidation(events);
+
+    if (result.success) {
+      res.status(201).json(result);
+    } else {
+      res.status(400).json(result);
+    }
+  } catch (error) {
+    console.error('Error in bulk add:', error);
+    res.status(500).json({
+      success: false,
+      errors: [{ row: 0, address: '', error: 'Failed to process bulk upload' }]
+    });
   }
 });
 
@@ -94,13 +124,14 @@ router.post('/admin/login', async (req: Request, res: Response) => {
   try {
     const { password } = req.body;
     const adminPassword = process.env.ADMIN_PASSWORD;
-    
+
     if (!adminPassword) {
       return res.status(500).json({ error: 'Admin password not configured' });
     }
-    
+
     if (password === adminPassword) {
-      res.json({ success: true });
+      const token = generateToken({ role: 'admin' });
+      res.json({ success: true, token });
     } else {
       res.status(401).json({ error: 'Invalid password' });
     }
@@ -110,20 +141,37 @@ router.post('/admin/login', async (req: Request, res: Response) => {
   }
 });
 
-// Update event
-router.put('/:id', async (req: Request, res: Response) => {
+// Verify token endpoint
+router.get('/admin/verify', authMiddleware, async (req: Request, res: Response) => {
+  res.json({ valid: true });
+});
+
+// Get ALL events for admin (no date filtering)
+router.get('/admin/all', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const events = await EventService.getAllEventsAdmin();
+    res.json(events);
+  } catch (error) {
+    console.error('Error fetching all admin events:', error);
+    res.status(500).json({ error: 'Failed to fetch events' });
+  }
+});
+
+// Update event (protected)
+router.put('/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const event = await EventService.updateEvent(parseInt(id), req.body);
     res.json(event);
   } catch (error) {
     console.error('Error updating event:', error);
-    res.status(500).json({ error: 'Failed to update event' });
+    const message = error instanceof Error ? error.message : 'Failed to update event';
+    res.status(400).json({ error: message });
   }
 });
 
-// Delete event
-router.delete('/:id', async (req: Request, res: Response) => {
+// Delete event (protected)
+router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     await EventService.deleteEvent(parseInt(id));
@@ -134,8 +182,8 @@ router.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// Bulk upload CSV
-router.post('/admin/bulk-upload', upload.single('csvFile'), async (req: MulterRequest, res: Response) => {
+// Bulk upload CSV (protected)
+router.post('/admin/bulk-upload', authMiddleware, upload.single('csvFile'), async (req: MulterRequest, res: Response) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No CSV file provided' });

@@ -4,6 +4,16 @@ import { GeocodingService } from './geocoding';
 import { TimezoneService } from './timezoneService';
 
 export class EventService {
+  // Get ALL events without date filtering (for admin panel)
+  static async getAllEventsAdmin(): Promise<Event[]> {
+    const query = `
+      SELECT * FROM events
+      ORDER BY COALESCE(start_date, event_date) DESC, event_time
+    `;
+    const result = await pool.query(query);
+    return result.rows;
+  }
+
   static async getAllEvents(userLat?: number, userLon?: number): Promise<Event[]> {
     // Get timezone for filtering - use user location if provided, otherwise use UTC
     let timeZoneId = 'UTC';
@@ -201,12 +211,28 @@ export class EventService {
   }
 
   static async addEvent(event: Omit<Event, 'id' | 'created_at' | 'updated_at'>): Promise<Event> {
+    let latitude = event.latitude;
+    let longitude = event.longitude;
+
+    // If coordinates not provided, geocode the address
+    if (!latitude || !longitude) {
+      const fullAddress = `${event.address}, ${event.city}, ${event.state} ${event.zip}`;
+      const geocodeResult = await GeocodingService.geocodeAddress(fullAddress);
+
+      if (!geocodeResult) {
+        throw new Error(`Could not geocode address: "${fullAddress}". Please verify the address is correct.`);
+      }
+
+      latitude = geocodeResult.latitude;
+      longitude = geocodeResult.longitude;
+    }
+
     const query = `
-      INSERT INTO events (event_date, event_time, event_type, address, address2, city, state, zip, latitude, longitude)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      INSERT INTO events (event_date, event_time, event_type, address, address2, city, state, zip, latitude, longitude, start_date, end_date)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING *
     `;
-    
+
     const values = [
       event.event_date,
       event.event_time,
@@ -216,8 +242,10 @@ export class EventService {
       event.city,
       event.state,
       event.zip,
-      event.latitude,
-      event.longitude,
+      latitude,
+      longitude,
+      event.start_date,
+      event.end_date,
     ];
 
     const result = await pool.query(query, values);
@@ -266,10 +294,11 @@ export class EventService {
     if (eventData.address || eventData.city || eventData.state || eventData.zip) {
       const fullAddress = `${eventData.address || current.address}, ${eventData.city || current.city}, ${eventData.state || current.state} ${eventData.zip || current.zip}`;
       const geocodeResult = await GeocodingService.geocodeAddress(fullAddress);
-      if (geocodeResult) {
-        latitude = geocodeResult.latitude;
-        longitude = geocodeResult.longitude;
+      if (!geocodeResult) {
+        throw new Error(`Could not geocode address: "${fullAddress}". Please verify the address is correct.`);
       }
+      latitude = geocodeResult.latitude;
+      longitude = geocodeResult.longitude;
     }
 
     const query = `
@@ -328,7 +357,7 @@ export class EventService {
         // Geocode the address
         const fullAddress = `${event.address}, ${event.city}, ${event.state} ${event.zip}`;
         const geocodeResult = await GeocodingService.geocodeAddress(fullAddress);
-        
+
         const eventWithCoords = {
           ...event,
           latitude: geocodeResult?.latitude || undefined,
@@ -344,5 +373,160 @@ export class EventService {
     }
 
     return createdEvents;
+  }
+
+  static async bulkAddEventsWithValidation(events: Omit<Event, 'id' | 'created_at' | 'updated_at'>[]): Promise<{
+    success: boolean;
+    events?: Event[];
+    errors?: { row: number; address: string; error: string }[];
+  }> {
+    const errors: { row: number; address: string; error: string }[] = [];
+    const geocodedEvents: (Omit<Event, 'id' | 'created_at' | 'updated_at'> & { latitude: number; longitude: number })[] = [];
+
+    // Helper function to validate date format (YYYY-MM-DD)
+    const isValidDate = (dateValue: unknown): boolean => {
+      if (!dateValue) return false;
+      const dateStr = String(dateValue);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        return false;
+      }
+      const date = new Date(dateStr);
+      return !isNaN(date.getTime());
+    };
+
+    // Helper to check if a date value is empty/missing
+    const isDateEmpty = (dateValue: unknown): boolean => {
+      if (!dateValue) return true;
+      const dateStr = String(dateValue).trim();
+      return dateStr === '' || dateStr === 'null' || dateStr === 'undefined';
+    };
+
+    // Phase 1: Validate ALL events (field validation + geocoding)
+    for (let i = 0; i < events.length; i++) {
+      const event = events[i];
+      const rowErrors: string[] = [];
+
+      // 1. Required field validation
+      if (!event.address?.trim()) rowErrors.push('address is required');
+      if (!event.city?.trim()) rowErrors.push('city is required');
+      if (!event.state?.trim()) rowErrors.push('state is required');
+      if (!event.zip?.trim()) rowErrors.push('zip is required');
+      if (!event.event_type?.trim()) rowErrors.push('event_type is required');
+      if (!event.event_time?.trim()) rowErrors.push('event_time is required');
+
+      // 2. Date validation
+      const hasDateRange = !isDateEmpty(event.start_date) || !isDateEmpty(event.end_date);
+      if (!hasDateRange && isDateEmpty(event.event_date)) {
+        rowErrors.push('event_date is required (or provide start_date and end_date)');
+      }
+
+      if (!isDateEmpty(event.event_date) && !isValidDate(event.event_date)) {
+        rowErrors.push('event_date must be a valid date (YYYY-MM-DD)');
+      }
+
+      // 3. Date range validation
+      if (!isDateEmpty(event.start_date) && isDateEmpty(event.end_date)) {
+        rowErrors.push('end_date is required when start_date is provided');
+      }
+      if (!isDateEmpty(event.end_date) && isDateEmpty(event.start_date)) {
+        rowErrors.push('start_date is required when end_date is provided');
+      }
+      if (!isDateEmpty(event.start_date) && !isDateEmpty(event.end_date)) {
+        if (!isValidDate(event.start_date)) {
+          rowErrors.push('start_date must be a valid date (YYYY-MM-DD)');
+        }
+        if (!isValidDate(event.end_date)) {
+          rowErrors.push('end_date must be a valid date (YYYY-MM-DD)');
+        }
+        if (isValidDate(event.start_date) && isValidDate(event.end_date) &&
+            new Date(String(event.end_date)) < new Date(String(event.start_date))) {
+          rowErrors.push('end_date must be on or after start_date');
+        }
+      }
+
+      // Build address string for error reporting
+      const addressDisplay = `${event.address || '(empty)'}, ${event.city || '(empty)'}, ${event.state || '(empty)'} ${event.zip || '(empty)'}`;
+
+      // If field validation failed, add errors and skip geocoding
+      if (rowErrors.length > 0) {
+        errors.push({
+          row: i + 1,
+          address: addressDisplay,
+          error: rowErrors.join('; ')
+        });
+        continue;
+      }
+
+      // 4. Geocoding validation
+      const fullAddress = `${event.address}, ${event.city}, ${event.state} ${event.zip}`;
+      try {
+        const geocodeResult = await GeocodingService.geocodeAddress(fullAddress);
+        if (!geocodeResult) {
+          errors.push({
+            row: i + 1,
+            address: fullAddress,
+            error: 'Address not found - verify address, city, state, and zip are correct'
+          });
+        } else {
+          geocodedEvents.push({
+            ...event,
+            latitude: geocodeResult.latitude,
+            longitude: geocodeResult.longitude
+          });
+        }
+      } catch (err) {
+        errors.push({
+          row: i + 1,
+          address: fullAddress,
+          error: `Geocoding failed: ${err instanceof Error ? err.message : 'Unknown error'}`
+        });
+      }
+    }
+
+    // Phase 2: If ANY errors, return them without inserting
+    if (errors.length > 0) {
+      return { success: false, errors };
+    }
+
+    // Phase 3: All validated, insert all events (with error handling)
+    try {
+      const createdEvents: Event[] = [];
+      for (const event of geocodedEvents) {
+        const query = `
+          INSERT INTO events (event_date, event_time, event_type, address, address2, city, state, zip, latitude, longitude, start_date, end_date)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+          RETURNING *
+        `;
+
+        const values = [
+          event.event_date,
+          event.event_time,
+          event.event_type,
+          event.address,
+          event.address2 || '',
+          event.city,
+          event.state,
+          event.zip,
+          event.latitude,
+          event.longitude,
+          event.start_date || null,
+          event.end_date || null,
+        ];
+
+        const result = await pool.query(query, values);
+        createdEvents.push(result.rows[0]);
+      }
+
+      return { success: true, events: createdEvents };
+    } catch (err) {
+      return {
+        success: false,
+        errors: [{
+          row: 0,
+          address: '',
+          error: `Database error: ${err instanceof Error ? err.message : 'Failed to insert events'}`
+        }]
+      };
+    }
   }
 } 
