@@ -33,8 +33,47 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult, lang = 'en' }) => {
     });
   };
 
-  const formatTime = (timeString: string) => {
-    return timeString;
+  /**
+   * Format date display based on start_date and optional end_date
+   * - Single date: "Friday, February 20, 2026"
+   * - Date range: "Feb 20, 2026 — Feb 22, 2026"
+   */
+  const formatDateDisplay = (startDate: string, endDate?: string) => {
+    if (endDate && endDate !== startDate) {
+      return `${formatShortDate(startDate)} — ${formatShortDate(endDate)}`;
+    }
+    return formatDate(startDate);
+  };
+
+  /**
+   * Format time display based on start_time and optional end_time
+   * - No times: "All Day"
+   * - Only start_time: "3:00 PM"
+   * - Both times: "3:00 PM - 5:00 PM"
+   */
+  const formatTimeDisplay = (startTime?: string, endTime?: string) => {
+    if (!startTime) {
+      return lang === 'es' ? 'Todo el día' : 'All Day';
+    }
+
+    const formatTime = (timeStr: string) => {
+      // Parse HH:MM:SS format
+      const [hours, minutes] = timeStr.split(':');
+      const hour = parseInt(hours, 10);
+      const minute = parseInt(minutes, 10);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const hour12 = hour % 12 || 12;
+      return `${hour12}:${minute.toString().padStart(2, '0')} ${ampm}`;
+    };
+
+    const formattedStart = formatTime(startTime);
+
+    if (endTime) {
+      const formattedEnd = formatTime(endTime);
+      return `${formattedStart} - ${formattedEnd}`;
+    }
+
+    return formattedStart;
   };
 
   const formatDistance = (miles: number) => {
@@ -92,23 +131,20 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult, lang = 'en' }) => {
 
         {/* Event Details */}
         <div className="space-y-3">
-          {/* Date and Time */}
+          {/* Date */}
           <div className="flex items-center space-x-2 text-gray-600">
             <Calendar className="h-4 w-4" />
-            {event.start_date && event.end_date ? (
-              <span className="text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
-                {formatShortDate(event.start_date)} — {formatShortDate(event.end_date)}
-              </span>
-            ) : (
-              <span className="text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
-                {formatDate(event.event_date)}
-              </span>
-            )}
+            <span className="text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+              {formatDateDisplay(event.start_date, event.end_date)}
+            </span>
           </div>
 
+          {/* Time */}
           <div className="flex items-center space-x-2 text-gray-600">
             <Clock className="h-4 w-4" />
-            <span className="text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>{formatTime(event.event_time)}</span>
+            <span className="text-sm" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+              {formatTimeDisplay(event.start_time, event.end_time)}
+            </span>
           </div>
 
           {/* Address */}
@@ -150,7 +186,7 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult, lang = 'en' }) => {
             className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors duration-200 text-base shadow-lg"
             onClick={() => window.open(getGoogleMapsUrl(), '_blank', 'noopener,noreferrer')}
             type="button"
-  
+
           >
             {translations[lang].getDirections}
           </button>
@@ -160,4 +196,4 @@ const EventCard: React.FC<EventCardProps> = ({ eventResult, lang = 'en' }) => {
   );
 };
 
-export default EventCard; 
+export default EventCard;

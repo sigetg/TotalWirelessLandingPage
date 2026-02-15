@@ -1,9 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import SearchForm from '../components/SearchForm';
 import EventCard from '../components/EventCard';
-import AdminLoginModal from '../components/AdminLoginModal';
-import AdminDataManager from '../components/AdminDataManager';
 import { eventService } from '../services/api';
 import { SearchFormData, EventSearchResult } from '../types';
 
@@ -48,8 +47,6 @@ const HomePage: React.FC = () => {
   const [searchParams, setSearchParams] = useState<SearchFormData | null>(null);
   const [lang, setLang] = useState<'en' | 'es'>('en');
   const [userLocation, setUserLocation] = useState<{ lat: number; lon: number } | null>(null);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const [showAdminManager, setShowAdminManager] = useState(false);
 
   // Get user's current location on component mount
   useEffect(() => {
@@ -108,15 +105,6 @@ const HomePage: React.FC = () => {
       setSearchParams(data);
     }
   }, []);
-
-  const handleAdminLoginSuccess = () => {
-    setShowAdminLogin(false);
-    setShowAdminManager(true);
-  };
-
-  const handleCloseAdminManager = () => {
-    setShowAdminManager(false);
-  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -242,27 +230,15 @@ const HomePage: React.FC = () => {
       <footer className="bg-slate-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center">
-            <button
-              onClick={() => setShowAdminLogin(true)}
+            <Link
+              to="/admin"
               className="text-sm text-gray-400 hover:text-white transition-colors"
             >
-              Admin Login
-            </button>
+              Admin
+            </Link>
           </div>
         </div>
       </footer>
-
-      {/* Admin Modals */}
-      <AdminLoginModal
-        isOpen={showAdminLogin}
-        onClose={() => setShowAdminLogin(false)}
-        onLoginSuccess={handleAdminLoginSuccess}
-      />
-      
-      <AdminDataManager
-        isOpen={showAdminManager}
-        onClose={handleCloseAdminManager}
-      />
     </div>
   );
 };

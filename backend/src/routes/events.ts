@@ -20,7 +20,7 @@ router.get('/', async (req: Request, res: Response) => {
     // Extract optional user location from query parameters
     const userLat = req.query.lat ? parseFloat(req.query.lat as string) : undefined;
     const userLon = req.query.lon ? parseFloat(req.query.lon as string) : undefined;
-    
+
     const events = await EventService.getAllEvents(userLat, userLon);
     res.json(events);
   } catch (error) {
@@ -33,11 +33,11 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/type/:eventType', async (req: Request, res: Response) => {
   try {
     const { eventType } = req.params;
-    
+
     // Extract optional user location from query parameters
     const userLat = req.query.lat ? parseFloat(req.query.lat as string) : undefined;
     const userLon = req.query.lon ? parseFloat(req.query.lon as string) : undefined;
-    
+
     const events = await EventService.getEventsByType(eventType, userLat, userLon);
     res.json(events);
   } catch (error) {
@@ -51,16 +51,16 @@ router.post('/search', async (req: Request, res: Response) => {
   try {
     const searchParams: LocationSearch = req.body;
     console.log('🔍 Search request received:', JSON.stringify(searchParams, null, 2));
-    
+
     const events = await EventService.searchEventsByLocation(searchParams);
     console.log(`✅ Found ${events.length} events`);
-    console.log('📍 Events:', events.map(e => ({ 
-      type: e.event.event_type, 
-      address: e.event.address, 
+    console.log('📍 Events:', events.map(e => ({
+      type: e.event.event_type,
+      address: e.event.address,
       city: e.event.city,
-      distance: e.distance 
+      distance: e.distance
     })));
-    
+
     res.json(events);
   } catch (error) {
     console.error('❌ Error searching events:', error);
@@ -191,7 +191,7 @@ router.post('/admin/bulk-upload', authMiddleware, upload.single('csvFile'), asyn
 
     const csvContent = req.file.buffer.toString('utf-8');
     const csvEvents = CsvParserService.parseCsvToEvents(csvContent);
-    
+
     // Validate all events
     const validationErrors: string[] = [];
     csvEvents.forEach((event, index) => {
@@ -202,31 +202,31 @@ router.post('/admin/bulk-upload', authMiddleware, upload.single('csvFile'), asyn
     });
 
     if (validationErrors.length > 0) {
-      return res.status(400).json({ 
-        error: 'Validation errors found', 
-        details: validationErrors 
+      return res.status(400).json({
+        error: 'Validation errors found',
+        details: validationErrors
       });
     }
 
-    // Convert CsvEventData to Event format
+    // Convert CsvEventData to Event format with time parsing
     const eventsToCreate = csvEvents.map((csvEvent: CsvEventData) => ({
-      event_date: new Date(csvEvent.event_date),
-      event_time: csvEvent.event_time,
+      start_date: new Date(csvEvent.start_date),
+      end_date: csvEvent.end_date ? new Date(csvEvent.end_date) : undefined,
+      start_time: CsvParserService.parseTimeToPostgres(csvEvent.start_time) || undefined,
+      end_time: CsvParserService.parseTimeToPostgres(csvEvent.end_time) || undefined,
       event_type: csvEvent.event_type,
       address: csvEvent.address,
       address2: csvEvent.address2 || '',
       city: csvEvent.city,
       state: csvEvent.state,
       zip: csvEvent.zip,
-      start_date: csvEvent.start_date ? new Date(csvEvent.start_date) : undefined,
-      end_date: csvEvent.end_date ? new Date(csvEvent.end_date) : undefined,
     }));
 
     const events = await EventService.bulkCreateEvents(eventsToCreate);
-    res.status(201).json({ 
-      success: true, 
+    res.status(201).json({
+      success: true,
       message: `Successfully created ${events.length} events`,
-      events 
+      events
     });
   } catch (error) {
     console.error('Error in bulk upload:', error);
@@ -244,7 +244,7 @@ router.post('/test-geocoding', async (req: Request, res: Response) => {
 
     const { GeocodingService } = await import('../services/geocoding');
     const result = await GeocodingService.geocodeAddress(address);
-    
+
     if (result) {
       res.json({
         success: true,
@@ -264,7 +264,7 @@ router.post('/test-geocoding', async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error('Geocoding test error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Geocoding failed'
     });
@@ -276,18 +276,18 @@ router.get('/health/maps-api', async (req: Request, res: Response) => {
   try {
     // Test geocoding with a simple address
     const testResult = await EventService.testGoogleMapsAPI();
-    res.json({ 
-      status: 'ok', 
+    res.json({
+      status: 'ok',
       googleMapsApiConfigured: true,
       testResult: testResult ? 'success' : 'failed'
     });
   } catch (error) {
-    res.status(500).json({ 
-      status: 'error', 
+    res.status(500).json({
+      status: 'error',
       googleMapsApiConfigured: false,
       error: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 });
 
-export default router; 
+export default router;

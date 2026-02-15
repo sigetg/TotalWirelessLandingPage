@@ -1,9 +1,9 @@
 export interface Event {
   id: number;
-  start_date?: string;
+  start_date: string;
   end_date?: string;
-  event_date: string;
-  event_time: string;
+  start_time?: string;  // TIME as "HH:MM:SS" or null for "All Day"
+  end_time?: string;    // TIME as "HH:MM:SS" or null
   event_type: string;
   address: string;
   address2?: string;
@@ -38,20 +38,21 @@ export interface SearchFormData {
 }
 
 export interface EventUpdate {
-  event_date?: string;
-  event_time?: string;
+  start_date?: string;
+  end_date?: string;
+  start_time?: string;
+  end_time?: string;
   event_type?: string;
   address?: string;
   address2?: string;
   city?: string;
   state?: string;
   zip?: string;
-  start_date?: string;
-  end_date?: string;
 }
 
 export interface AdminLoginResponse {
   success: boolean;
+  token?: string;
   error?: string;
 }
 
@@ -61,4 +62,29 @@ export interface BulkUploadResponse {
   events: Event[];
   error?: string;
   details?: string[];
-} 
+}
+
+export interface BulkAddError {
+  row: number;
+  address: string;
+  error: string;
+}
+
+export interface BulkAddResult {
+  success: boolean;
+  events?: Event[];
+  errors?: BulkAddError[];
+}
+
+export interface EventFormData {
+  start_date: string;
+  end_date?: string;
+  start_time?: string;
+  end_time?: string;
+  event_type: string;
+  address: string;
+  address2?: string;
+  city: string;
+  state: string;
+  zip: string;
+}

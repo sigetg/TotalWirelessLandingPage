@@ -5,7 +5,7 @@ import AdminLayout from '../../components/AdminLayout';
 import { eventService } from '../../services/api';
 import { Event } from '../../types';
 
-type SortColumn = 'event_type' | 'event_date' | 'event_time' | 'address' | 'city' | 'state';
+type SortColumn = 'event_type' | 'start_date' | 'end_date' | 'start_time' | 'address' | 'city' | 'state' | 'zip';
 type SortDirection = 'asc' | 'desc';
 type EventTab = 'active' | 'inactive';
 
@@ -18,28 +18,38 @@ const formatDate = (dateStr: string): string => {
   });
 };
 
+const formatTime = (timeStr: string | undefined): string => {
+  if (!timeStr) return 'All Day';
+  // Parse HH:MM:SS format
+  const [hours, minutes] = timeStr.split(':');
+  const hour = parseInt(hours, 10);
+  const minute = parseInt(minutes, 10);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${minute.toString().padStart(2, '0')} ${ampm}`;
+};
+
 const isEventActive = (event: Event): boolean => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   // If event has end_date, check if it's still running
   if (event.end_date) {
-    // Parse date string - handle both "2026-02-15" and "2026-02-15T00:00:00.000Z"
     const endDate = new Date(event.end_date);
     endDate.setHours(0, 0, 0, 0);
     return endDate >= today;
   }
 
-  // Otherwise check event_date
-  const eventDate = new Date(event.event_date);
-  eventDate.setHours(0, 0, 0, 0);
-  return eventDate >= today;
+  // Otherwise check start_date
+  const startDate = new Date(event.start_date);
+  startDate.setHours(0, 0, 0, 0);
+  return startDate >= today;
 };
 
 const EventListPage: React.FC = () => {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortColumn, setSortColumn] = useState<SortColumn>('event_date');
+  const [sortColumn, setSortColumn] = useState<SortColumn>('start_date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [activeTab, setActiveTab] = useState<EventTab>('active');
   const queryClient = useQueryClient();
@@ -82,9 +92,15 @@ const EventListPage: React.FC = () => {
       let aVal: string | Date;
       let bVal: string | Date;
 
-      if (sortColumn === 'event_date') {
-        aVal = new Date(a.event_date);
-        bVal = new Date(b.event_date);
+      if (sortColumn === 'start_date') {
+        aVal = new Date(a.start_date);
+        bVal = new Date(b.start_date);
+      } else if (sortColumn === 'end_date') {
+        aVal = a.end_date ? new Date(a.end_date) : new Date(a.start_date);
+        bVal = b.end_date ? new Date(b.end_date) : new Date(b.start_date);
+      } else if (sortColumn === 'start_time') {
+        aVal = a.start_time || '';
+        bVal = b.start_time || '';
       } else {
         aVal = (a[sortColumn] || '').toLowerCase();
         bVal = (b[sortColumn] || '').toLowerCase();
@@ -221,16 +237,22 @@ const EventListPage: React.FC = () => {
                     Type<SortIndicator column="event_type" />
                   </th>
                   <th
-                    onClick={() => handleSort('event_date')}
+                    onClick={() => handleSort('start_date')}
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   >
-                    Date<SortIndicator column="event_date" />
+                    Start Date<SortIndicator column="start_date" />
                   </th>
                   <th
-                    onClick={() => handleSort('event_time')}
+                    onClick={() => handleSort('end_date')}
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   >
-                    Time<SortIndicator column="event_time" />
+                    End Date<SortIndicator column="end_date" />
+                  </th>
+                  <th
+                    onClick={() => handleSort('start_time')}
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                  >
+                    Time<SortIndicator column="start_time" />
                   </th>
                   <th
                     onClick={() => handleSort('address')}
@@ -250,6 +272,12 @@ const EventListPage: React.FC = () => {
                   >
                     State<SortIndicator column="state" />
                   </th>
+                  <th
+                    onClick={() => handleSort('zip')}
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                  >
+                    ZIP<SortIndicator column="zip" />
+                  </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
@@ -262,15 +290,16 @@ const EventListPage: React.FC = () => {
                       {event.event_type}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatDate(event.event_date)}
-                      {event.start_date && event.end_date && (
-                        <span className="block text-xs text-gray-400">
-                          {formatDate(event.start_date)} - {formatDate(event.end_date)}
-                        </span>
-                      )}
+                      {formatDate(event.start_date)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {event.event_time}
+                      {event.end_date ? formatDate(event.end_date) : '—'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {formatTime(event.start_time)}
+                      {event.end_time && (
+                        <span className="text-gray-400"> - {formatTime(event.end_time)}</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {event.address}
@@ -281,6 +310,9 @@ const EventListPage: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {event.state}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {event.zip}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <Link

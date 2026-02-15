@@ -6,8 +6,8 @@ import { GeocodingService } from '../services/geocoding';
 interface CSVEvent {
   startDate?: string;
   endDate?: string;
-  eventDate?: string; // legacy
-  eventTime?: string; // legacy
+  startTime?: string;
+  endTime?: string;
   eventType: string;
   address: string;
   address2?: string;
@@ -19,24 +19,24 @@ interface CSVEvent {
 async function importCSVData(filePath: string): Promise<void> {
   const fileContent = fs.readFileSync(filePath, 'utf-8');
   const lines = fileContent.split('\n').filter(line => line.trim());
-  
+
   console.log(`Total lines in file: ${lines.length}`);
   console.log(`First few lines:`);
   lines.slice(0, 5).forEach((line, index) => {
     console.log(`Line ${index}: ${line}`);
   });
-  
+
   // SSI CSV has multiple header/section rows. We'll skip lines that don't look like data.
   const dataLines = lines.slice(0);
   console.log(`Data lines (after skipping headers): ${dataLines.length}`);
-  
+
   const events: CSVEvent[] = [];
 
   for (const line of dataLines) {
     const columns = line.split(',');
     console.log(`Columns in line: ${columns.length}`);
     console.log(`Line content: ${line}`);
-    
+
     // SSI format columns (per sample):
     // col0: section/flag (ignore), col1: TSP ID, col2: Agent Store ID,
     // col3: Location Status, col4: Address 1, col5: State, col6: CMA (ignore),
@@ -58,6 +58,8 @@ async function importCSVData(filePath: string): Promise<void> {
       const event: CSVEvent = {
         startDate,
         endDate,
+        startTime: '10:00:00',  // Default time for imported events
+        endTime: '18:00:00',    // 6pm
         eventType,
         address: address1,
         city: '',
@@ -70,7 +72,7 @@ async function importCSVData(filePath: string): Promise<void> {
   }
 
   console.log(`Processing ${events.length} events from ${filePath}`);
-  
+
   for (const event of events) {
     try {
       console.log(`Processing event with range: "${event.startDate}" to "${event.endDate}"`);
@@ -96,32 +98,32 @@ async function importCSVData(filePath: string): Promise<void> {
 
       const startDate = normalizeDate(event.startDate);
       const endDate = normalizeDate(event.endDate);
-      if (!startDate || !endDate) {
-        console.log(`⚠ Skipping invalid range: ${event.startDate} - ${event.endDate}`);
+      if (!startDate) {
+        console.log(`⚠ Skipping invalid start date: ${event.startDate}`);
         continue;
       }
-      
+
       // Geocode the address
       const fullAddress = `${event.address}, ${event.state}`;
       const geocodeResult = await GeocodingService.geocodeAddress(fullAddress);
       const city = event.city || geocodeResult?.city || '';
       const zip = event.zip || geocodeResult?.zip || '';
-      
-      // Insert into database
+
+      // Insert into database with new schema
       const query = `
-        INSERT INTO events (start_date, end_date, event_date, event_time, event_type, address, address2, city, state, zip, latitude, longitude)
+        INSERT INTO events (start_date, end_date, start_time, end_time, event_type, address, address2, city, state, zip, latitude, longitude)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         ON CONFLICT DO NOTHING
       `;
-      
+
       const values = [
         startDate,
-        endDate,
-        startDate, // keep legacy event_date for compatibility (start of range)
-        '10am - 6pm',
+        endDate || null,
+        event.startTime || null,
+        event.endTime || null,
         event.eventType,
         event.address,
-        event.address2,
+        event.address2 || null,
         city,
         event.state,
         zip,
@@ -130,7 +132,7 @@ async function importCSVData(filePath: string): Promise<void> {
       ];
 
       await pool.query(query, values);
-      
+
       if (geocodeResult) {
         console.log(`✓ Geocoded: ${fullAddress}`);
       } else {
@@ -140,7 +142,7 @@ async function importCSVData(filePath: string): Promise<void> {
       console.error(`Error processing event: ${event.address}`, error);
     }
   }
-  
+
   console.log(`✓ Completed importing ${events.length} events from ${filePath}`);
 }
 
@@ -148,15 +150,15 @@ async function importAllData(): Promise<void> {
   try {
     const dataDir = path.join(__dirname, '../../../data');
     const files = fs.readdirSync(dataDir).filter(file => file.endsWith('.csv'));
-    
+
     console.log(`Found ${files.length} CSV files to import`);
-    
+
     for (const file of files) {
       const filePath = path.join(dataDir, file);
       console.log(`\nImporting ${file}...`);
       await importCSVData(filePath);
     }
-    
+
     console.log('\n✓ All data imported successfully!');
   } catch (error) {
     console.error('Error importing all data:', error);
@@ -177,4 +179,4 @@ if (require.main === module) {
       console.error('Import failed:', error);
       process.exit(1);
     });
-} 
+}

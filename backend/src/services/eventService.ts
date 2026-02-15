@@ -8,7 +8,7 @@ export class EventService {
   static async getAllEventsAdmin(): Promise<Event[]> {
     const query = `
       SELECT * FROM events
-      ORDER BY COALESCE(start_date, event_date) DESC, event_time
+      ORDER BY start_date DESC, start_time NULLS LAST
     `;
     const result = await pool.query(query);
     return result.rows;
@@ -22,36 +22,25 @@ export class EventService {
       timeZoneId = timezoneResult?.timeZoneId || 'UTC';
     }
 
-    // Get current date and time in the user's timezone
+    // Get current date in the user's timezone
     const currentTimeInTimezone = TimezoneService.getCurrentTimeInTimezone(timeZoneId);
     const currentDate = currentTimeInTimezone.toISOString().split('T')[0];
-    const currentTime = currentTimeInTimezone.toTimeString().split(' ')[0];
-    
+
+    // Show events where:
+    // - end_date >= today (for multi-day events)
+    // - OR start_date >= today (for single-day events without end_date)
     const query = `
-      SELECT * FROM events 
+      SELECT * FROM events
       WHERE (
-        -- New range-based logic: show events where end_date is in the future
-        (start_date IS NOT NULL AND end_date IS NOT NULL AND end_date >= $1)
+        (end_date IS NOT NULL AND end_date >= $1)
         OR
-        -- Fallback to single-day logic for legacy rows
-        (start_date IS NULL AND end_date IS NULL AND (
-          event_date > $1 OR (event_date = $1 AND event_time > $2)
-        ))
+        (end_date IS NULL AND start_date >= $1)
       )
-      ORDER BY COALESCE(start_date, event_date), event_time
+      ORDER BY start_date, start_time NULLS LAST
     `;
-    const result = await pool.query(query, [currentDate, currentTime]);
-    
-    // Double-check events are in the future using timezone-aware comparison
-    const events = result.rows;
-    return events.filter((event: any) => {
-      if (event.start_date && event.end_date) {
-        const todayDate = new Date(`${currentDate}T00:00:00`);
-        const end = new Date(event.end_date);
-        return todayDate <= end;
-      }
-      return TimezoneService.isEventInFuture(event.event_date, event.event_time, timeZoneId);
-    });
+    const result = await pool.query(query, [currentDate]);
+
+    return result.rows;
   }
 
   static async getEventsByType(eventType: string, userLat?: number, userLon?: number): Promise<Event[]> {
@@ -62,41 +51,28 @@ export class EventService {
       timeZoneId = timezoneResult?.timeZoneId || 'UTC';
     }
 
-    // Get current date and time in the user's timezone
+    // Get current date in the user's timezone
     const currentTimeInTimezone = TimezoneService.getCurrentTimeInTimezone(timeZoneId);
     const currentDate = currentTimeInTimezone.toISOString().split('T')[0];
-    const currentTime = currentTimeInTimezone.toTimeString().split(' ')[0];
-    
+
     const query = `
-      SELECT * FROM events 
-      WHERE event_type = $1 
+      SELECT * FROM events
+      WHERE event_type = $1
         AND (
-          (start_date IS NOT NULL AND end_date IS NOT NULL AND $2 BETWEEN start_date AND end_date)
+          (end_date IS NOT NULL AND end_date >= $2)
           OR
-          (start_date IS NULL AND end_date IS NULL AND (
-            event_date > $2 OR (event_date = $2 AND event_time > $3)
-          ))
+          (end_date IS NULL AND start_date >= $2)
         )
-      ORDER BY COALESCE(start_date, event_date), event_time
+      ORDER BY start_date, start_time NULLS LAST
     `;
-    const result = await pool.query(query, [eventType, currentDate, currentTime]);
-    
-    // Double-check events are in the future using timezone-aware comparison
-    const events = result.rows;
-    return events.filter((event: any) => {
-      if (event.start_date && event.end_date) {
-        const todayDate = new Date(`${currentDate}T00:00:00`);
-        const start = new Date(event.start_date);
-        const end = new Date(event.end_date);
-        return todayDate >= start && todayDate <= end;
-      }
-      return TimezoneService.isEventInFuture(event.event_date, event.event_time, timeZoneId);
-    });
+    const result = await pool.query(query, [eventType, currentDate]);
+
+    return result.rows;
   }
 
   static async searchEventsByLocation(search: LocationSearch): Promise<EventSearchResult[]> {
     const { address, zip, city, state } = search;
-    
+
     let userLat: number;
     let userLon: number;
 
@@ -139,54 +115,39 @@ export class EventService {
     const timezoneResult = await TimezoneService.getTimezone(userLat, userLon);
     const timeZoneId = timezoneResult?.timeZoneId || 'UTC';
 
-    // Get current date and time in the user's timezone
+    // Get current date in the user's timezone
     const currentTimeInTimezone = TimezoneService.getCurrentTimeInTimezone(timeZoneId);
     const currentDate = currentTimeInTimezone.toISOString().split('T')[0];
-    const currentTime = currentTimeInTimezone.toTimeString().split(' ')[0];
 
-    // Get the 6 closest events using Haversine formula, filtered for future events
+    // Get the closest events using Haversine formula, filtered for future events
     const query = `
       SELECT *,
-        (3959 * acos(cos(radians($1)) * cos(radians(latitude)) * 
-         cos(radians(longitude) - radians($2)) + sin(radians($1)) * 
+        (3959 * acos(cos(radians($1)) * cos(radians(latitude)) *
+         cos(radians(longitude) - radians($2)) + sin(radians($1)) *
          sin(radians(latitude)))) AS distance
-      FROM events 
-      WHERE latitude IS NOT NULL 
+      FROM events
+      WHERE latitude IS NOT NULL
         AND longitude IS NOT NULL
         AND (
-          (start_date IS NOT NULL AND end_date IS NOT NULL AND end_date >= $3)
+          (end_date IS NOT NULL AND end_date >= $3)
           OR
-          (start_date IS NULL AND end_date IS NULL AND (
-            event_date > $3 OR (event_date = $3 AND event_time > $4)
-          ))
+          (end_date IS NULL AND start_date >= $3)
         )
-      ORDER BY distance, COALESCE(start_date, event_date), event_time
+      ORDER BY distance, start_date, start_time NULLS LAST
       LIMIT 100
     `;
 
-    console.log(`🔎 Querying database with:`, { 
-      userLat, 
-      userLon, 
-      currentDate, 
-      currentTime,
-      timeZoneId 
-    });
-    
-    const result = await pool.query(query, [userLat, userLon, currentDate, currentTime]);
-    console.log(`📊 Database returned ${result.rows.length} candidate events`);
-    
-    const candidates = result.rows.filter((event: any) => {
-      if (event.start_date && event.end_date) {
-        const todayDate = new Date(`${currentDate}T00:00:00`);
-        const end = new Date(event.end_date);
-        const isValid = todayDate <= end;
-        console.log(`📅 Event ${event.id} (${event.event_type}): ends ${event.end_date}, today: ${currentDate}, valid: ${isValid}`);
-        return isValid;
-      }
-      return TimezoneService.isEventInFuture(event.event_date, event.event_time, timeZoneId);
+    console.log(`🔎 Querying database with:`, {
+      userLat,
+      userLon,
+      currentDate,
+      timeZoneId
     });
 
-    const topSix = candidates.slice(0, 6);
+    const result = await pool.query(query, [userLat, userLon, currentDate]);
+    console.log(`📊 Database returned ${result.rows.length} candidate events`);
+
+    const topSix = result.rows.slice(0, 6);
 
     const eventSearchResults: EventSearchResult[] = topSix.map((event: any) => ({
       event,
@@ -228,14 +189,16 @@ export class EventService {
     }
 
     const query = `
-      INSERT INTO events (event_date, event_time, event_type, address, address2, city, state, zip, latitude, longitude, start_date, end_date)
+      INSERT INTO events (start_date, end_date, start_time, end_time, event_type, address, address2, city, state, zip, latitude, longitude)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING *
     `;
 
     const values = [
-      event.event_date,
-      event.event_time,
+      event.start_date,
+      event.end_date || null,
+      event.start_time || null,
+      event.end_time || null,
       event.event_type,
       event.address,
       event.address2,
@@ -244,8 +207,6 @@ export class EventService {
       event.zip,
       latitude,
       longitude,
-      event.start_date,
-      event.end_date,
     ];
 
     const result = await pool.query(query, values);
@@ -255,11 +216,11 @@ export class EventService {
   static async updateEventGeocoding(): Promise<void> {
     const query = 'SELECT * FROM events WHERE latitude IS NULL OR longitude IS NULL';
     const result = await pool.query(query);
-    
+
     for (const event of result.rows) {
       const fullAddress = `${event.address}, ${event.city}, ${event.state} ${event.zip}`;
       const geocodeResult = await GeocodingService.geocodeAddress(fullAddress);
-      
+
       if (geocodeResult) {
         const updateQuery = 'UPDATE events SET latitude = $1, longitude = $2 WHERE id = $3';
         await pool.query(updateQuery, [geocodeResult.latitude, geocodeResult.longitude, event.id]);
@@ -302,19 +263,19 @@ export class EventService {
     }
 
     const query = `
-      UPDATE events 
-      SET event_date = COALESCE($2, event_date),
-          event_time = COALESCE($3, event_time),
-          event_type = COALESCE($4, event_type),
-          address = COALESCE($5, address),
-          address2 = COALESCE($6, address2),
-          city = COALESCE($7, city),
-          state = COALESCE($8, state),
-          zip = COALESCE($9, zip),
-          latitude = COALESCE($10, latitude),
-          longitude = COALESCE($11, longitude),
-          start_date = COALESCE($12, start_date),
-          end_date = COALESCE($13, end_date),
+      UPDATE events
+      SET start_date = COALESCE($2, start_date),
+          end_date = $3,
+          start_time = $4,
+          end_time = $5,
+          event_type = COALESCE($6, event_type),
+          address = COALESCE($7, address),
+          address2 = COALESCE($8, address2),
+          city = COALESCE($9, city),
+          state = COALESCE($10, state),
+          zip = COALESCE($11, zip),
+          latitude = COALESCE($12, latitude),
+          longitude = COALESCE($13, longitude),
           updated_at = CURRENT_TIMESTAMP
       WHERE id = $1
       RETURNING *
@@ -322,8 +283,10 @@ export class EventService {
 
     const values = [
       id,
-      eventData.event_date,
-      eventData.event_time,
+      eventData.start_date,
+      eventData.end_date !== undefined ? (eventData.end_date || null) : current.end_date,
+      eventData.start_time !== undefined ? (eventData.start_time || null) : current.start_time,
+      eventData.end_time !== undefined ? (eventData.end_time || null) : current.end_time,
       eventData.event_type,
       eventData.address,
       eventData.address2,
@@ -332,8 +295,6 @@ export class EventService {
       eventData.zip,
       latitude,
       longitude,
-      eventData.start_date,
-      eventData.end_date,
     ];
 
     const result = await pool.query(query, values);
@@ -343,7 +304,7 @@ export class EventService {
   static async deleteEvent(id: number): Promise<void> {
     const query = 'DELETE FROM events WHERE id = $1';
     const result = await pool.query(query, [id]);
-    
+
     if (result.rowCount === 0) {
       throw new Error('Event not found');
     }
@@ -412,34 +373,19 @@ export class EventService {
       if (!event.state?.trim()) rowErrors.push('state is required');
       if (!event.zip?.trim()) rowErrors.push('zip is required');
       if (!event.event_type?.trim()) rowErrors.push('event_type is required');
-      if (!event.event_time?.trim()) rowErrors.push('event_time is required');
 
-      // 2. Date validation
-      const hasDateRange = !isDateEmpty(event.start_date) || !isDateEmpty(event.end_date);
-      if (!hasDateRange && isDateEmpty(event.event_date)) {
-        rowErrors.push('event_date is required (or provide start_date and end_date)');
-      }
-
-      if (!isDateEmpty(event.event_date) && !isValidDate(event.event_date)) {
-        rowErrors.push('event_date must be a valid date (YYYY-MM-DD)');
+      // 2. start_date is required in new schema
+      if (isDateEmpty(event.start_date)) {
+        rowErrors.push('start_date is required');
+      } else if (!isValidDate(event.start_date)) {
+        rowErrors.push('start_date must be a valid date (YYYY-MM-DD)');
       }
 
-      // 3. Date range validation
-      if (!isDateEmpty(event.start_date) && isDateEmpty(event.end_date)) {
-        rowErrors.push('end_date is required when start_date is provided');
-      }
-      if (!isDateEmpty(event.end_date) && isDateEmpty(event.start_date)) {
-        rowErrors.push('start_date is required when end_date is provided');
-      }
-      if (!isDateEmpty(event.start_date) && !isDateEmpty(event.end_date)) {
-        if (!isValidDate(event.start_date)) {
-          rowErrors.push('start_date must be a valid date (YYYY-MM-DD)');
-        }
+      // 3. end_date validation (optional but must be valid if provided)
+      if (!isDateEmpty(event.end_date)) {
         if (!isValidDate(event.end_date)) {
           rowErrors.push('end_date must be a valid date (YYYY-MM-DD)');
-        }
-        if (isValidDate(event.start_date) && isValidDate(event.end_date) &&
-            new Date(String(event.end_date)) < new Date(String(event.start_date))) {
+        } else if (isValidDate(event.start_date) && new Date(String(event.end_date)) < new Date(String(event.start_date))) {
           rowErrors.push('end_date must be on or after start_date');
         }
       }
@@ -493,14 +439,16 @@ export class EventService {
       const createdEvents: Event[] = [];
       for (const event of geocodedEvents) {
         const query = `
-          INSERT INTO events (event_date, event_time, event_type, address, address2, city, state, zip, latitude, longitude, start_date, end_date)
+          INSERT INTO events (start_date, end_date, start_time, end_time, event_type, address, address2, city, state, zip, latitude, longitude)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
           RETURNING *
         `;
 
         const values = [
-          event.event_date,
-          event.event_time,
+          event.start_date,
+          event.end_date || null,
+          event.start_time || null,
+          event.end_time || null,
           event.event_type,
           event.address,
           event.address2 || '',
@@ -509,8 +457,6 @@ export class EventService {
           event.zip,
           event.latitude,
           event.longitude,
-          event.start_date || null,
-          event.end_date || null,
         ];
 
         const result = await pool.query(query, values);
@@ -529,4 +475,4 @@ export class EventService {
       };
     }
   }
-} 
+}

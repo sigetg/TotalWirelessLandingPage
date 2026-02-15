@@ -1,9 +1,9 @@
 export interface Event {
   id: number;
-  start_date?: Date;
+  start_date: Date;
   end_date?: Date;
-  event_date: Date;
-  event_time: string;
+  start_time?: string;  // TIME as "HH:MM:SS"
+  end_time?: string;    // TIME as "HH:MM:SS"
   event_type: string;
   address: string;
   address2?: string;
@@ -71,4 +71,4 @@ export interface DistanceMatrixResponse {
     }>;
   }>;
   status: string;
-} 
+}

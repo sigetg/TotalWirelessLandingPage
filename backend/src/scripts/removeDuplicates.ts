@@ -1,8 +1,10 @@
 import pool from '../database/connection';
 
 interface DuplicateGroup {
-  event_date: string;
-  event_time: string;
+  start_date: string;
+  end_date: string | null;
+  start_time: string | null;
+  end_time: string | null;
   event_type: string;
   address: string;
   city: string;
@@ -14,9 +16,11 @@ interface DuplicateGroup {
 
 async function findDuplicates(): Promise<DuplicateGroup[]> {
   const query = `
-    SELECT 
-      event_date,
-      event_time,
+    SELECT
+      start_date,
+      end_date,
+      start_time,
+      end_time,
       event_type,
       address,
       city,
@@ -24,10 +28,10 @@ async function findDuplicates(): Promise<DuplicateGroup[]> {
       zip,
       COUNT(*) as count,
       array_agg(id ORDER BY created_at) as ids
-    FROM events 
-    GROUP BY event_date, event_time, event_type, address, city, state, zip
+    FROM events
+    GROUP BY start_date, end_date, start_time, end_time, event_type, address, city, state, zip
     HAVING COUNT(*) > 1
-    ORDER BY count DESC, event_date, event_time
+    ORDER BY count DESC, start_date, start_time
   `;
 
   const result = await pool.query(query);
@@ -36,18 +40,18 @@ async function findDuplicates(): Promise<DuplicateGroup[]> {
 
 async function removeDuplicates(): Promise<void> {
   console.log('🔍 Starting duplicate detection...');
-  
+
   try {
     // Find all duplicate groups
     const duplicates = await findDuplicates();
-    
+
     if (duplicates.length === 0) {
       console.log('✅ No duplicates found in the database.');
       return;
     }
 
     console.log(`📊 Found ${duplicates.length} groups of duplicates:`);
-    
+
     let totalDuplicates = 0;
     let totalRemoved = 0;
 
@@ -56,8 +60,13 @@ async function removeDuplicates(): Promise<void> {
       totalDuplicates += group.count;
       const idsToKeep = group.ids[0]; // Keep the oldest record (first in array)
       const idsToRemove = group.ids.slice(1); // Remove all others
-      
-      console.log(`\n📍 Group: ${group.event_type} on ${group.event_date} at ${group.event_time}`);
+
+      const timeDisplay = group.start_time ? `at ${group.start_time}` : '(All Day)';
+      const dateDisplay = group.end_date
+        ? `${group.start_date} to ${group.end_date}`
+        : `${group.start_date}`;
+
+      console.log(`\n📍 Group: ${group.event_type} on ${dateDisplay} ${timeDisplay}`);
       console.log(`   Location: ${group.address}, ${group.city}, ${group.state} ${group.zip}`);
       console.log(`   Found ${group.count} duplicates`);
       console.log(`   Keeping ID: ${idsToKeep}`);
@@ -65,13 +74,13 @@ async function removeDuplicates(): Promise<void> {
 
       // Delete the duplicate records
       const deleteQuery = `
-        DELETE FROM events 
+        DELETE FROM events
         WHERE id = ANY($1)
       `;
-      
+
       const deleteResult = await pool.query(deleteQuery, [idsToRemove]);
       totalRemoved += deleteResult.rowCount || 0;
-      
+
       console.log(`   ✅ Removed ${deleteResult.rowCount} duplicate(s)`);
     }
 
@@ -89,25 +98,30 @@ async function removeDuplicates(): Promise<void> {
 
 async function showDuplicateStats(): Promise<void> {
   console.log('📈 Duplicate Statistics:');
-  
+
   const duplicates = await findDuplicates();
-  
+
   if (duplicates.length === 0) {
     console.log('✅ No duplicates found.');
     return;
   }
 
   console.log(`\nFound ${duplicates.length} groups of duplicates:`);
-  
+
   duplicates.forEach((group, index) => {
-    console.log(`\n${index + 1}. ${group.event_type} on ${group.event_date} at ${group.event_time}`);
+    const timeDisplay = group.start_time ? `at ${group.start_time}` : '(All Day)';
+    const dateDisplay = group.end_date
+      ? `${group.start_date} to ${group.end_date}`
+      : `${group.start_date}`;
+
+    console.log(`\n${index + 1}. ${group.event_type} on ${dateDisplay} ${timeDisplay}`);
     console.log(`   Location: ${group.address}, ${group.city}, ${group.state} ${group.zip}`);
     console.log(`   Count: ${group.count} duplicates`);
   });
 
   const totalDuplicates = duplicates.reduce((sum, group) => sum + group.count, 0);
   const totalToRemove = totalDuplicates - duplicates.length; // Keep one from each group
-  
+
   console.log(`\n📊 Summary:`);
   console.log(`   Total duplicate groups: ${duplicates.length}`);
   console.log(`   Total duplicate records: ${totalDuplicates}`);
@@ -146,4 +160,4 @@ if (require.main === module) {
   main();
 }
 
-export { findDuplicates, removeDuplicates, showDuplicateStats }; 
+export { findDuplicates, removeDuplicates, showDuplicateStats };

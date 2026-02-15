@@ -14,6 +14,12 @@ interface EditableEvent extends Event {
   hasChanges?: boolean;
 }
 
+const formatTimeForInput = (timeStr: string | undefined): string => {
+  if (!timeStr) return '';
+  // PostgreSQL TIME format is HH:MM:SS, HTML input expects HH:MM
+  return timeStr.substring(0, 5);
+};
+
 const AdminDataManager: React.FC<AdminDataManagerProps> = ({ isOpen, onClose }) => {
   const [events, setEvents] = useState<EditableEvent[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +46,7 @@ const AdminDataManager: React.FC<AdminDataManagerProps> = ({ isOpen, onClose }) 
   };
 
   const handleEdit = (id: number) => {
-    setEvents(prev => prev.map(event => 
+    setEvents(prev => prev.map(event =>
       event.id === id ? { ...event, isEditing: true } : event
     ));
   };
@@ -51,14 +57,14 @@ const AdminDataManager: React.FC<AdminDataManagerProps> = ({ isOpen, onClose }) 
       setEvents(prev => prev.filter(event => event.id !== id));
     } else {
       // Reset to original state
-      setEvents(prev => prev.map(event => 
+      setEvents(prev => prev.map(event =>
         event.id === id ? { ...event, isEditing: false, hasChanges: false } : event
       ));
     }
   };
 
   const handleFieldChange = (id: number, field: keyof EventUpdate, value: string) => {
-    setEvents(prev => prev.map(event => 
+    setEvents(prev => prev.map(event =>
       event.id === id ? { ...event, [field]: value, hasChanges: true } : event
     ));
   };
@@ -71,19 +77,19 @@ const AdminDataManager: React.FC<AdminDataManagerProps> = ({ isOpen, onClose }) 
       if (event.isNew) {
         // Create new event
         const newEvent = await eventService.addEvent({
-          event_date: event.event_date,
-          event_time: event.event_time,
+          start_date: event.start_date,
+          end_date: event.end_date,
+          start_time: event.start_time,
+          end_time: event.end_time,
           event_type: event.event_type,
           address: event.address,
           address2: event.address2,
           city: event.city,
           state: event.state,
           zip: event.zip,
-          start_date: event.start_date,
-          end_date: event.end_date,
         });
-        
-        setEvents(prev => prev.map(e => 
+
+        setEvents(prev => prev.map(e =>
           e.id === id ? { ...newEvent, isEditing: false, isNew: false, hasChanges: false } : e
         ));
       } else {
@@ -95,9 +101,9 @@ const AdminDataManager: React.FC<AdminDataManagerProps> = ({ isOpen, onClose }) 
               updateData[key as keyof EventUpdate] = event[key as keyof Event] as string;
             }
           });
-          
+
           const updatedEvent = await eventService.updateEvent(id, updateData);
-          setEvents(prev => prev.map(e => 
+          setEvents(prev => prev.map(e =>
             e.id === id ? { ...updatedEvent, isEditing: false, hasChanges: false } : e
           ));
         }
@@ -123,18 +129,19 @@ const AdminDataManager: React.FC<AdminDataManagerProps> = ({ isOpen, onClose }) 
     // Use a unique negative ID for new events
     const existingIds = events.map(e => e.id);
     const newId = existingIds.length > 0 ? Math.min(...existingIds) - 1 : -1;
+    const today = new Date().toISOString().split('T')[0];
     const newEvent: EditableEvent = {
       id: newId,
-      event_date: '',
-      event_time: '',
+      start_date: today,
+      end_date: '',
+      start_time: '',
+      end_time: '',
       event_type: '',
       address: '',
       address2: '',
       city: '',
       state: '',
       zip: '',
-      start_date: '',
-      end_date: '',
       latitude: 0,
       longitude: 0,
       created_at: new Date().toISOString(),
@@ -148,7 +155,7 @@ const AdminDataManager: React.FC<AdminDataManagerProps> = ({ isOpen, onClose }) 
 
   const handleSaveAll = async () => {
     const eventsToSave = events.filter(event => event.hasChanges || event.isNew);
-    
+
     for (const event of eventsToSave) {
       try {
         await handleSave(event.id);
@@ -157,7 +164,7 @@ const AdminDataManager: React.FC<AdminDataManagerProps> = ({ isOpen, onClose }) 
         return;
       }
     }
-    
+
     setSuccess('All changes saved successfully');
     setTimeout(() => setSuccess(''), 3000);
   };
@@ -212,7 +219,7 @@ const AdminDataManager: React.FC<AdminDataManagerProps> = ({ isOpen, onClose }) 
             >
               Add New Event
             </button>
-            
+
             <button
               onClick={handleSaveAll}
               disabled={!events.some(e => e.hasChanges || e.isNew)}
@@ -234,7 +241,8 @@ const AdminDataManager: React.FC<AdminDataManagerProps> = ({ isOpen, onClose }) 
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Date</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
@@ -252,24 +260,49 @@ const AdminDataManager: React.FC<AdminDataManagerProps> = ({ isOpen, onClose }) 
                           {event.isEditing ? (
                             <input
                               type="date"
-                              value={event.event_date}
-                              onChange={(e) => handleFieldChange(event.id, 'event_date', e.target.value)}
+                              value={event.start_date?.split('T')[0] || ''}
+                              onChange={(e) => handleFieldChange(event.id, 'start_date', e.target.value)}
                               className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
                             />
                           ) : (
-                            <span className="text-sm text-gray-900">{event.event_date}</span>
+                            <span className="text-sm text-gray-900">{event.start_date?.split('T')[0]}</span>
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {event.isEditing ? (
                             <input
-                              type="time"
-                              value={event.event_time}
-                              onChange={(e) => handleFieldChange(event.id, 'event_time', e.target.value)}
+                              type="date"
+                              value={event.end_date?.split('T')[0] || ''}
+                              onChange={(e) => handleFieldChange(event.id, 'end_date', e.target.value)}
                               className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
                             />
                           ) : (
-                            <span className="text-sm text-gray-900">{event.event_time}</span>
+                            <span className="text-sm text-gray-900">{event.end_date?.split('T')[0] || '-'}</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {event.isEditing ? (
+                            <div className="flex space-x-1">
+                              <input
+                                type="time"
+                                value={formatTimeForInput(event.start_time)}
+                                onChange={(e) => handleFieldChange(event.id, 'start_time', e.target.value)}
+                                placeholder="Start"
+                                className="w-20 px-1 py-1 border border-gray-300 rounded text-sm"
+                              />
+                              <input
+                                type="time"
+                                value={formatTimeForInput(event.end_time)}
+                                onChange={(e) => handleFieldChange(event.id, 'end_time', e.target.value)}
+                                placeholder="End"
+                                className="w-20 px-1 py-1 border border-gray-300 rounded text-sm"
+                              />
+                            </div>
+                          ) : (
+                            <span className="text-sm text-gray-900">
+                              {event.start_time ? formatTimeForInput(event.start_time) : 'All Day'}
+                              {event.end_time && ` - ${formatTimeForInput(event.end_time)}`}
+                            </span>
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -333,10 +366,10 @@ const AdminDataManager: React.FC<AdminDataManagerProps> = ({ isOpen, onClose }) 
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-                          {event.latitude && event.longitude && 
+                          {event.latitude && event.longitude &&
                            !isNaN(Number(event.latitude)) && !isNaN(Number(event.longitude)) ? (
                             <span className="text-green-600">
-                              ✓ {Number(event.latitude).toFixed(4)}, {Number(event.longitude).toFixed(4)}
+                              {Number(event.latitude).toFixed(4)}, {Number(event.longitude).toFixed(4)}
                             </span>
                           ) : (
                             <span className="text-red-500">No coordinates</span>

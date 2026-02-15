@@ -1,0 +1,385 @@
+start_date,start_time,end_time,event_type,address,address2,city,state,zip
+2026-02-20,15:00,17:00,Tax Time Savings Event,2043 Bartow Ave,,Bronx,NY,10475
+2026-02-20,15:00,17:00,Tax Time,199 Ave A,,New York,NY,10009
+2026-02-21,12:00,14:00,Tax Time,46 W Fordham Rd,,Bronx,NY,10468
+2026-02-21,16:00,18:00,Tax Time,2050 Webster Ave,,Bronx,NY,10457
+2026-02-21,12:00,14:00,Tax Time,1881a Rockaway Pkwy,,Brooklyn,NY,11236
+2026-02-21,16:00,18:00,Tax Time,11112 Flatlands Ave,,Brooklyn,NY,11207
+2026-02-27,15:00,17:00,Tax Time,694 Main Ave,,Passaic,NJ,07055
+2026-02-27,15:00,17:00,Tax Time,771-b Roosevelt Avenue,,Cartaret,NJ,07008
+2026-02-28,12:00,14:00,Tax Time,1272 Fulton St,,Brooklyn,NY,11216
+2026-02-28,16:00,18:00,Tax Time,1805 Fulton St,,Brooklyn,NY,11233
+2026-02-28,12:00,14:00,Tax Time,5723 Bergenline Ave,,West New York,NJ,07093
+2026-02-28,16:00,18:00,Tax Time,153 Ferry St,,Newark,NJ,07105
+2026-03-06,15:00,17:00,Tax Time,501 W 125th St,,New York,NY,10027
+2026-03-06,15:00,17:00,Tax Time,542 W 207 St,,New York,NY,10034
+2026-03-07,12:00,14:00,Tax Time,487 E Tremont Ave,,Bronx,NY,10457
+2026-03-07,16:00,18:00,Tax Time,713 E Tremont Ave,,Bronx,NY,10457
+2026-03-07,12:00,14:00,Tax Time,4008 Bergenline Ave,,Union City,NJ,07087
+2026-03-07,16:00,18:00,Tax Time,4900 Bergenline Ave,B2,Union City,NJ,07087
+2026-03-07,12:00,14:00,Tax Time,3257 Steinway St,,Astoria,NY,11103
+2026-03-07,16:00,18:00,Tax Time,2513 Broadway,,Astoria,NY,11106
+2026-03-07,12:00,14:00,Tax Time,17 Main Street,,Yonkers,NY,10701
+2026-03-07,16:00,18:00,Tax Time,46 Gramatan Ave,,Mount Vernon,NY,10550
+2026-03-13,15:00,17:00,Tax Time,316 Central Ave,,Jersey City,NJ,07307
+2026-03-13,15:00,17:00,Tax Time,105 Clinton St,,New York,NY,10002
+2026-03-14,12:00,14:00,Tax Time,136 Main St,,Paterson,NJ,07505
+2026-03-14,16:00,18:00,Tax Time,331 Kearny Ave,,Kearny,NJ,07032
+2026-03-14,12:00,14:00,Tax Time,171 Elmora Ave,,Elizabeth,NJ,07202
+2026-03-14,16:00,18:00,Tax Time,47 Broad Street,,Elizabeth,NJ,07201
+2026-03-14,12:00,14:00,Tax Time,384 North Ave,,New Rochelle,NY,10801
+2026-03-14,16:00,18:00,Tax Time,519b Main St,,New Rochelle,NY,10801
+2026-03-14,12:00,14:00,Tax Time,415a S Broadway,,Yonkers,NY,10705
+2026-03-14,16:00,18:00,Tax Time,358 S Broadway,,Yonkers,NY,10705
+2026-03-20,15:00,17:00,Tax Time,6-b E 183rd St,,Bronx,NY,10453
+2026-03-20,15:00,17:00,Tax Time,108 Beverley Rd,,Brooklyn,NY,11218
+2026-03-20,15:00,17:00,Tax Time,1111 Rutland Road,,Brooklyn,NY,11212
+2026-03-21,12:00,14:00,Tax Time,74 Main St,A,Hempstead,NY,11550
+2026-03-21,16:00,18:00,Tax Time,428 Clinton St,,Hempstead,NY,11550
+2026-03-21,12:00,14:00,Tax Time,1572 Flatbush Ave,,Brooklyn,NY,11210
+2026-03-21,16:00,18:00,Tax Time,1911 Nostrand Ave,,Brooklyn,NY,11226
+2026-03-21,12:00,14:00,Tax Time,3539 Junction Blvd,,Corona,NY,11368
+2026-03-21,16:00,18:00,Tax Time,3919 103rd St,,Corona,NY,11368
+2026-03-27,15:00,17:00,Tax Time,13520 Liberty Ave,,South Richmond Hill,NY,11419
+2026-03-27,15:00,17:00,Tax Time,12801 Liberty Ave,,South Richmond Hill,NY,11419
+2026-03-27,15:00,17:00,Tax Time,3341 Broadway,,New York,NY,10031
+2026-03-28,12:00,14:00,Tax Time,252 Knickerbocker Ave,,Brooklyn,NY,11237
+2026-03-28,16:00,18:00,Tax Time,379 Knickerbocker Ave,,Brooklyn,NY,11237
+2026-03-28,12:00,14:00,Tax Time,10817 101st Ave,,South Richmond Hill,NY,11419
+2026-03-28,16:00,18:00,Tax Time,10408 Lefferts Blvd,,South Richmond Hill,NY,11419
+2026-03-28,12:00,14:00,Tax Time,966 Southern Blvd,,Bronx,NY,10459
+2026-03-28,16:00,18:00,Tax Time,1087 Southern Blvd,,Bronx,NY,10459
+2026-02-27,15:00,17:00,Tax Time,5600 Germantown Ave,,Philadelphia,PA,19144
+2026-02-27,15:00,17:00,Tax Time,36 S Broad St,,Woodbury,NJ,08096
+2026-02-28,12:00,14:00,Tax Time,6301 Oxford Ave,,Philadelphia,PA,19111
+2026-02-28,16:00,18:00,Tax Time,5694 Rising Sun Ave,Unit 10,Philadelphia,PA,19120
+2026-02-28,12:00,14:00,Tax Time,411 E Wyoming Ave,,Philadelphia,PA,19120
+2026-02-28,16:00,18:00,Tax Time,3400 Aramingo Ave,Suite 14,Philadelphia,PA,19134
+2026-03-06,15:00,17:00,Tax Time,1 Penn Sq E,,Philadelphia,PA,19107
+2026-03-06,15:00,17:00,Tax Time,1340 Girard Ave,,Philadelphia,PA,19123
+2026-03-07,12:00,14:00,Tax Time,359 Pennington Ave,17a,Trenton,NJ,08618
+2026-03-07,16:00,18:00,Tax Time,1980 N Olden Ave,Suite Z,Ewing,NJ,08618
+2026-03-07,12:00,14:00,Tax Time,2542 Welsh Rd,,Philadelphia,PA,19152
+2026-03-07,16:00,18:00,Tax Time,8346 Bustleton Ave,,Philadelphia,PA,19152
+2026-03-13,15:00,17:00,Tax Time,2918 N Market St,,Wilmington,DE,19802
+2026-03-13,15:00,17:00,Tax Time,1657 Pulaski Hwy,,Bear,DE,19701
+2026-03-14,12:00,14:00,Tax Time,505 East Landis Ave,,Vineland,NJ,08360
+2026-03-14,16:00,18:00,Tax Time,700 N 2nd St,3,Millville,NJ,08332
+2026-03-14,12:00,14:00,Tax Time,6330 Woodland Ave,,Philadelphia,PA,19142
+2026-03-14,16:00,18:00,Tax Time,1448 Chester Pike,,Sharon Hill,PA,19079
+2026-03-20,15:00,17:00,Tax Time,7221 Frankford Ave,,Philadelphia,PA,19135
+2026-03-20,15:00,17:00,Tax Time,2740 N 5th St,,Philadelphia,PA,19133
+2026-03-21,12:00,14:00,Tax Time,1404 Point Breeze Ave,,Philadelphia,PA,19146
+2026-03-21,16:00,18:00,Tax Time,2104 S Broad St,,Philadelphia,PA,19145
+2026-03-21,12:00,14:00,Tax Time,5249 Frankford Ave,,Philadelphia,PA,19124
+2026-03-21,16:00,18:00,Tax Time,4664 Frankford Ave,,Philadelphia,PA,19124
+2026-03-27,15:00,17:00,Tax Time,2701 North Broad St,,Philadelphia,PA,19132
+2026-03-27,15:00,17:00,Tax Time,2644 Germantown Ave,,Philadelphia,PA,19133
+2026-03-28,12:00,14:00,Tax Time,5614 N Broad St,,Philadelphia,PA,19141
+2026-03-28,16:00,18:00,Tax Time,5602 North 5th St,,Philadelphia,PA,19120
+2026-03-28,12:00,14:00,Tax Time,1037 S Broad St,,Trenton,NJ,08611
+2026-03-28,16:00,18:00,Tax Time,507 Hamilton Ave,,Trenton,NJ,08609
+2026-02-27,15:00,17:00,Tax Time,5506 Kenilworth Ave,,Riverdale,MD,20737
+2026-02-28,15:00,17:00,Tax Time,6261 Livingston Rd,,Oxon Hill,MD,20745
+2026-03-06,15:00,17:00,Tax Time,651 E University Blvd,,Silver Spring,MD,20901
+2026-03-07,15:00,17:00,Tax Time,5 Willowdale Dr,Unit B12,Frederick,MD,21702
+2026-03-13,15:00,17:00,Tax Time,5506 Kenilworth Ave,,Riverdale,MD,20737
+2026-03-14,15:00,17:00,Tax Time,216 N Frederick Ave,,Gaithersburg,MD,20877
+2026-03-20,15:00,17:00,Tax Time,14435 Richmond Hwy,,Woodbridge,VA,22191
+2026-03-21,15:00,17:00,Tax Time,14087 Richmond Hwy,125,Woodbridge,VA,22191
+2026-03-27,15:00,17:00,Tax Time,1305 University Blvd E,,Takoma Park,MD,20912
+2026-03-28,15:00,17:00,Tax Time,1500-a University Blvd,,Hyattsville,MD,20783
+2026-02-27,15:00,17:00,Tax Time,5427 Reisterstown Rd,,Baltimore,MD,21215
+2026-03-06,15:00,17:00,Tax Time,337 Hospital Dr,,Glen Burnie,MD,21061
+2026-03-13,15:00,17:00,Tax Time,3727 Eastern Ave,,Baltimore,MD,21224
+2026-03-14,15:00,17:00,Tax Time,5214 Baltimore National Pike,Suite C,Baltimore,MD,21229
+2026-03-20,15:00,17:00,Tax Time,710 Merritt Blvd,,Baltimore,MD,21224
+2026-03-21,15:00,17:00,Tax Time,200 N Highland Ave,E,Baltimore,MD,21224
+2026-02-20,17:00,19:00,Tax Time,947 E 8th Ave,,Hialeah,FL,33010
+2026-02-20,17:00,19:00,Tax Time,133 Ne 54 St,,Miami,FL,33137
+2026-02-21,15:00,17:00,Tax Time,1313 W 49th St,2,Hialeah,FL,33012
+2026-02-21,15:00,17:00,Tax Time,455 NE 167th St,,North Miami Beach,FL,33162
+2026-02-27,17:00,19:00,Tax Time,15912 SW 137th Ave,,Miami,FL,33177
+2026-02-27,17:00,19:00,Tax Time,1674 NW 17th Ave,,Miami,FL,33125
+2026-02-28,17:00,19:00,Tax Time,256 Washington Ave,,Homestead,FL,33030
+2026-02-28,15:00,17:00,Tax Time,977 W State Road 84,,Fort Lauderdale,FL,33315
+2026-02-28,14:00,18:00,Adbikes,1706 NW 36th St,,Miami,FL,33142
+2026-03-01,13:00,17:00,Adbikes,17014 Collins Ave,,Sunny Isl Bch,FL,33160
+2026-03-06,15:00,17:00,Tax Time,563 W Oakland Park Blvd,,Wilton Manors,FL,33311
+2026-03-06,15:00,17:00,Tax Time,2408 N University Dr,,Sunrise,FL,33322
+2026-03-07,15:00,17:00,Tax Time,3853 W Hillsboro Blvd,,Deerfield Beach,FL,33442
+2026-03-07,15:00,17:00,Tax Time,5347 N State Road 7,,Tamarac,FL,33319
+2026-03-13,15:00,17:00,Tax Time,117 SE 8th Dr,,Okeechobee,FL,34974
+2026-03-13,15:00,17:00,Tax Time,1024 SE Port St Lucie Blvd,,Port Saint Lucie,FL,34952
+2026-03-14,15:00,17:00,Tax Time,1264 N Military Trl,,West Palm Beach,FL,33409
+2026-03-14,15:00,17:00,Tax Time,3094 S Jog Rd,,Greenacres,FL,33467
+2026-03-20,15:00,17:00,Tax Time,740 W 49th St,,Hialeah,FL,33012
+2026-03-20,15:00,17:00,Tax Time,10963 SW 40th St,,Miami,FL,33165
+2026-03-21,15:00,17:00,Tax Time,1944 NE 163rd St,,North Miami Beach,FL,33162
+2026-03-21,15:00,17:00,Tax Time,12192 NW 7th Ave,,North Miami,FL,33168
+2026-02-20,15:00,17:00,Tax Time,12449 Central Ave,,Chino,CA,91710
+2026-02-20,15:00,17:00,Tax Time,421 N Atlantic Blvd,114,Monterey Park,CA,91754
+2026-02-20,15:00,17:00,Tax Time,5906 S Vermont Ave,,Los Angeles,CA,90044
+2026-02-21,11:00,13:00,Tax Time,3852 Peck Rd,,El Monte,CA,91732
+2026-02-21,17:00,19:00,Tax Time,705 S Alvarado St,,Los Angeles,CA,90057
+2026-02-21,11:00,13:00,Tax Time,827 S Vermont Ave,,Los Angeles,CA,90005
+2026-02-27,15:00,17:00,Tax Time,1363 E 4th St,Suite B,Ontario,CA,91764
+2026-02-27,15:00,17:00,Tax Time,1405 N Citrus Ave,,Covina,CA,91722
+2026-02-27,15:00,17:00,Tax Time,8401 Van Nuys Blvd,Suite 54,Panorama City,CA,91402
+2026-02-28,16:00,18:00,Tax Time,1500 E Florence Ave,Unit B,Los Angeles,CA,90001
+2026-02-28,12:00,14:00,Tax Time,2148 S Bristol St,Ste B,Santa Ana,CA,92704
+2026-02-28,11:00,13:00,Tax Time,6440 Pacific Blvd,,Huntington Park,CA,90255
+2026-03-06,13:00,15:00,Tax Time,10012 Sierra Ave,,Fontana,CA,92335
+2026-03-06,15:00,17:00,Tax Time,12843 Harbor Blvd,E2,Garden Grove,CA,92840
+2026-03-06,15:00,17:00,Tax Time,2238 E Cesar E Chavez Ave,,Los Angeles,CA,90033
+2026-03-07,16:00,18:00,Tax Time,11123 Long Beach Blvd,Unit 4,Lynwood,CA,90262
+2026-03-07,16:00,18:00,Tax Time,12537 E Carson St,,Hawaiian Gardens,CA,90716
+2026-03-07,11:00,13:00,Tax Time,2530 S San Pedro St,,Los Angeles,CA,90011
+2026-03-07,16:00,18:00,Tax Time,2818 Saviers Rd,,Oxnard,CA,93033
+2026-03-07,11:00,13:00,Tax Time,4149 Tweedy Blvd,M,South Gate,CA,90280
+2026-03-13,15:00,17:00,Tax Time,4900 Irvine Blvd,Unit 104,Irvine,CA,92620
+2026-03-13,15:00,17:00,Tax Time,8116 Long Beach Blvd,A,South Gate,CA,90280
+2026-03-14,11:00,13:00,Tax Time,11994 Foothill Blvd,,Lake View Terrace,CA,91342
+2026-03-14,11:00,13:00,Tax Time,225 S State College Blvd,,Anaheim,CA,92806
+2026-03-14,16:00,18:00,Tax Time,7903 Knott Ave,A,Buena Park,CA,90620
+2026-03-20,15:00,17:00,Tax Time,1038 E Avenue J,D11,Lancaster,CA,93535
+2026-03-20,15:00,17:00,Tax Time,1550 W Rosecrans Ave,,Compton,CA,90220
+2026-03-21,16:00,18:00,Tax Time,621 S Broadway,Unit A,Los Angeles,CA,90014
+2026-03-21,11:00,13:00,Tax Time,8843 Rosecrans Ave,Suite B,Downey,CA,90242
+2026-03-21,13:00,15:00,Tax Time,1730 E 17th St,B,Santa Ana,CA,92705
+2026-02-27,16:00,18:00,Tax Time,104 San Pablo Towne Ctr,,San Pablo,CA,94806
+2026-02-27,16:00,18:00,Tax Time,2748 Mission St,,San Francisco,CA,94110
+2026-02-28,15:00,17:00,Tax Time,607 Broadway,,San Francisco,CA,94133
+2026-03-06,16:00,18:00,Tax Time,1675 Tully Rd,,San Jose,CA,95122
+2026-03-06,16:00,18:00,Tax Time,330 Bellam Blvd,,San Rafael,CA,94901
+2026-03-07,12:00,14:00,Tax Time,4620 Mission St,,San Francisco,CA,94112
+2026-03-07,12:00,14:00,Tax Time,930 23rd St,B,Richmond,CA,94804
+2026-03-13,16:00,18:00,Tax Time,2979 Jefferson St,,Napa,CA,94558
+2026-03-14,16:30,18:30,Tax Time,3355 Sonoma Blvd,30,Vallejo,CA,94590
+2026-03-14,12:00,14:00,Tax Time,711 Stony Point Rd,10,Santa Rosa,CA,95407
+2026-02-27,16:00,18:00,Tax Time,6332 Florin Rd,,Sacramento,CA,95823
+2026-02-27,15:00,17:00,Tax Time,550 S Cherokee Ln,,Lodi,CA,95240
+2026-02-27,15:00,17:00,Tax Time,5583 Mack Rd,,Sacramento,CA,95823
+2026-02-28,12:00,14:00,Tax Time,2407 Northgate Blvd,,Sacramento,CA,95833
+2026-02-28,12:00,14:00,Tax Time,1955 W Texas St,3,Fairfield,CA,94533
+2026-02-28,12:00,14:00,Tax Time,751 E Monte Vista Ave,B,Vacaville,CA,95688
+2026-03-06,15:00,17:00,Tax Time,1650 E Hatch Rd,E,Modesto,CA,95351
+2026-03-06,15:00,17:00,Tax Time,514 E Yosemite Ave,,Manteca,CA,95336
+2026-03-06,15:00,17:00,Tax Time,616 W Hammer Ln,H,Stockton,CA,95207
+2026-03-07,16:00,18:00,Tax Time,10345 Folsom Blvd,B,Rancho Cordova,CA,95670
+2026-03-07,12:00,14:00,Tax Time,3655 Elkhorn Blvd,,North Highlands,CA,95660
+2026-03-13,17:00,19:00,Tax Time,2151 N Texas St,,Fairfield,CA,94533
+2026-03-13,15:00,17:00,Tax Time,2923 W Capitol Ave,,West Sacramento,CA,95691
+2026-03-14,12:00,14:00,Tax Time,1215 Colusa Ave,C313,Yuba City,CA,95991
+2026-03-14,16:00,18:00,Tax Time,1326 Fulton Ave,,Sacramento,CA,95825
+2026-03-20,17:00,19:00,Tax Time,340 Travis Blvd,Ste 5,Fairfield,CA,94533
+2026-03-20,15:00,17:00,Tax Time,4950 Pacific Ave,500,Stockton,CA,95207
+2026-03-27,15:00,17:00,Tax Time,525 N Golden State Blvd,,Turlock,CA,95380
+2026-03-28,12:00,14:00,Tax Time,1540 E March Ln,B4,Stockton,CA,95210
+2026-03-28,16:00,18:00,Tax Time,353 W Charter Way,Suite B,Stockton,CA,95206
+2026-02-27,15:00,17:00,Tax Time,6952 Linda Vista Rd,,San Diego,CA,92111
+2026-02-28,16:00,18:00,Tax Time,674 E San Ysidro Blvd,B,San Diego,CA,92173
+2026-03-06,15:00,17:00,Tax Time,342 W San Ysidro Blvd,Suite H,San Diego,CA,92173
+2026-03-07,12:00,14:00,Tax Time,1021 N Santa Fe Ave,E,Vista,CA,92084
+2026-03-14,12:00,14:00,Tax Time,2058 E Valley Pkwy,,Escondido,CA,92027
+2026-03-15,16:00,18:00,Tax Time,727 E San Ysidro Blvd,D,San Diego,CA,92173
+2026-02-27,16:00,18:00,Tax Time,235 N Eastern Ave,#112,Las Vegas,NV,89101
+2026-02-28,15:00,17:00,Tax Time,400 N Nellis Blvd,Ste J2,Las Vegas,NV,89110
+2026-03-06,16:00,18:00,Tax Time,3300 S Jones Blvd,101,Las Vegas,NV,89146
+2026-03-07,12:00,14:00,Tax Time,4576 E Tropicana Ave,,Las Vegas,NV,89121
+2026-03-13,15:00,17:00,Tax Time,2801 W Washington Ave,Suite 120,Las Vegas,NV,89107
+2026-03-14,15:00,17:00,Tax Time,3395 E Tropicana,Suite 100b,Las Vegas,NV,89121
+2026-02-21,12:00,14:00,Tax Time,1276 E Dundee Rd,,Palatine,IL,60074
+2026-02-27,16:30,18:30,Tax Time,200 S Neltnor Blvd,Unit 100,West Chicago,IL,60185
+2026-02-27,16:30,18:30,Tax Time,639 W Lincoln Hwy,,Chicago Heights,IL,60411
+2026-02-27,16:00,18:00,Tax Time,902 Bode Rd,,Schaumburg,IL,60194
+2026-02-28,12:00,14:00,Tax Time,17663 Torrence Ave,,Lansing,IL,60438
+2026-02-28,12:00,14:00,Tax Time,3966 W Grand Ave,,Chicago,IL,60651
+2026-02-28,16:00,18:00,Tax Time,4801 W Armitage Ave,,Chicago,IL,60639
+2026-02-28,16:30,18:30,Tax Time,602 Torrence Ave,,Calumet City,IL,60409
+2026-02-28,12:00,14:00,Tax Time,229 W Grand Ave,Suite E,Bensenville,IL,60106
+2026-03-01,12:00,14:00,Tax Time,4640-a W Diversey Ave,,Chicago,IL,60639
+2026-03-06,16:30,18:30,Tax Time,13140 Cicero Ave,750b,Crestwood,IL,60445
+2026-03-07,12:00,14:00,Tax Time,5601 W Belmont Ave,,Chicago,IL,60634
+2026-03-07,16:30,18:30,Tax Time,6500 W Irving Park Rd,,Chicago,IL,60634
+2026-03-07,16:30,18:30,Tax Time,7961 S Cicero Ave,,Chicago,IL,60652
+2026-03-07,12:00,14:00,Tax Time,9606 S Cicero Ave,,Oak Lawn,IL,60453
+2026-03-12,12:00,14:00,Tax Time,6726 N Clark St,,Chicago,IL,60626
+2026-03-13,16:30,18:30,Tax Time,1774 W Algonquin Rd,,Mt Prospect,IL,60056
+2026-03-13,16:30,18:30,Tax Time,4301 S Ashland Ave,,Chicago,IL,60609
+2026-03-14,12:00,14:00,Tax Time,4547 N Broadway Ave,Unit B,Chicago,IL,60640
+2026-03-14,12:00,14:00,Tax Time,2819 W 55th St,,Chicago,IL,60632
+2026-03-14,12:00,14:00,Tax Time,3248 W Lawrence Ave,,Chicago,IL,60625
+2026-03-14,16:00,18:00,Tax Time,4705 N Pulaski Road,Suite 104,Chicago,IL,60630
+2026-03-14,16:30,18:30,Tax Time,5858 S Kedzie Ave,,Chicago,IL,60629
+2026-03-20,16:30,18:30,Tax Time,18226 Kedzie Ave,,Hazel Crest,IL,60429
+2026-03-20,16:30,18:30,Tax Time,77 Clock Tower Plaza,,Elgin,IL,60120
+2026-03-21,12:00,14:00,Tax Time,2601 W 95th St,Unit A,Evergreen Park,IL,60805
+2026-03-21,16:30,18:30,Tax Time,2317 S Cicero Ave,Suite A,Cicero,IL,60804
+2026-03-21,16:00,18:00,Tax Time,313 Howard St,Ste 315,Evanston,IL,60202
+2026-03-27,16:30,18:30,Tax Time,3735 W 26th Street,,Chicago,IL,60623
+2026-02-27,15:00,17:00,Tax Time,3253 Buford Hwy,Suite 780,Atlanta,GA,30329
+2026-02-27,16:00,18:00,Tax Time,1500 Pleasant Hill Rd,110,Duluth,GA,30096
+2026-02-28,15:00,17:00,Tax Time,1085 Holcomb Bridge Rd,140,Roswell,GA,30076
+2026-02-28,12:00,14:00,Tax Time,2470 Mlk Jr Dr SW,B,Atlanta,GA,30311
+2026-02-28,12:00,14:00,Tax Time,4650 Jimmy Carter Blvd,,Norcross,GA,30093
+2026-03-06,14:00,16:00,Tax Time,5658 Riverdale Rd,U,Atlanta,GA,30349
+2026-03-07,16:30,18:30,Tax Time,5855 Buford Hwy NE,F,Doraville,GA,30340
+2026-03-07,16:30,18:30,Tax Time,1985 Campbellton Rd SW,4,Atlanta,GA,30311
+2026-03-07,12:00,14:00,Tax Time,2841 Greenbriar Pkwy SW,N450,Atlanta,GA,30331
+2026-03-07,16:30,18:30,Tax Time,2078 Beaver Ruin Rd,Suite 400,Norcross,GA,30071
+2026-03-07,12:00,14:00,Tax Time,5209 Buford Hwy NE,Suite #58,Doraville,GA,30340
+2026-03-07,12:00,14:00,Tax Time,5944 Buford Hwy,Unit 2,Norcross,GA,30071
+2026-03-13,12:00,14:00,Tax Time,65 Lawrenceville Suwanee Rd,12,Lawrenceville,GA,30044
+2026-03-13,12:00,14:00,Tax Time,971 N Hairston Rd,A-10,Stone Mountain,GA,30083
+2026-03-13,12:00,14:00,Tax Time,8438 Hospital Dr,,Douglasville,GA,30134
+2026-03-14,16:30,18:30,Tax Time,1245 Veterans Memorial Hwy Sw,31,Mableton,GA,30126
+2026-03-14,16:30,18:30,Tax Time,1241 Moreland Ave SE,D,Atlanta,GA,30316
+2026-03-14,12:00,14:00,Tax Time,504 Atlanta Hwy,,Gainesville,GA,30501
+2026-03-14,12:00,14:00,Tax Time,4140 Jonesboro Rd,A3-4,Forest Park,GA,30297
+2026-03-14,12:00,14:00,Tax Time,3565 Austell Rd SW,Unit 1025,Marietta,GA,30008
+2026-02-27,16:00,18:00,Tax Time,25857 Lahser Rd,,Southfield,MI,48033
+2026-02-28,16:00,18:00,Tax Time,9701 Harper Ave,Unit A,Detroit,MI,48213
+2026-03-06,16:30,18:30,Tax Time,3631 Miller Rd,,Flint,MI,48503
+2026-03-06,16:30,18:30,Tax Time,20577 15 Mile Rd,,Clinton Township,MI,48035
+2026-03-07,16:30,18:30,Tax Time,12029 Woodward Ave,,Highland Park,MI,48203
+2026-03-07,12:00,14:00,Tax Time,50 E Walton Blvd,,Pontiac,MI,48340
+2026-03-07,16:00,18:00,Tax Time,759 Baldwin Ave,,Pontiac,MI,48340
+2026-03-07,16:30,18:30,Tax Time,15371 Merriman Rd,,Livonia,MI,48154
+2026-03-07,12:00,14:00,Tax Time,25043 Grand River Ave,,Redford,MI,48240
+2026-03-07,12:00,14:00,Tax Time,25429 Van Dyke Ave,,Center Line,MI,48015
+2026-03-07,12:00,14:00,Tax Time,14331 Livernois Ave,,Detroit,MI,48238
+2026-03-07,16:00,18:00,Tax Time,7584 E 9 Mile Rd,102,Warren,MI,48091
+2026-03-13,12:00,14:00,Tax Time,7431 W Vernor Hwy,C,Detroit,MI,48209
+2026-03-13,16:30,18:30,Tax Time,35824 Van Dyke Ave,,Sterling Hts,MI,48312
+2026-03-13,17:00,19:00,Tax Time,30538 23 Mile Rd,Unit 1,Chesterfield,MI,48047
+2026-03-13,16:30,18:30,Tax Time,35705 Van Born Rd,,Romulus,MI,48174
+2026-03-14,16:30,18:30,Tax Time,4659 Washtenaw Ave,,Ann Arbor,MI,48108
+2026-03-14,16:30,18:30,Tax Time,22816 John R Rd,,Hazel Park,MI,48030
+2026-03-14,12:00,14:00,Tax Time,28668 Dequindre Rd,,Warren,MI,48092
+2026-03-14,16:30,18:30,Tax Time,6097 Rawsonville Rd,,Belleville,MI,48111
+2026-03-14,16:00,18:00,Tax Time,39075 Garfield Rd,,Clinton Twp,MI,48038
+2026-03-14,12:00,14:00,Tax Time,395 N Groesbeck Hwy,Ste C,Mount Clemens,MI,48043
+2026-03-14,16:00,18:00,Tax Time,1887 Southfield Rd,,Lincoln Park,MI,48146
+2026-03-14,16:00,18:00,Tax Time,27353 Cherry Hill Rd,,Inkster,MI,48141
+2026-03-20,16:30,18:30,Tax Time,10001 Telegraph Rd,,Redford,MI,48239
+2026-03-20,16:30,18:30,Tax Time,163 N Telegraph Rd,,Waterford,MI,48328
+2026-03-21,16:00,18:00,Tax Time,6865 Michigan Ave,,Detroit,MI,48210
+2026-03-21,12:00,14:00,Tax Time,17724 Frazho Rd,,Roseville,MI,48066
+2026-03-21,12:00,14:00,Tax Time,5845 W Vernor Hwy,,Detroit,MI,48209
+2026-03-21,12:00,14:00,Tax Time,12730 W 7 Mile Rd,Unit A,Detroit,MI,48235
+2026-02-27,16:00,18:00,Tax Time,4732 Marigold Ave,,Kissimmee,FL,34758
+2026-02-28,12:00,14:00,Tax Time,1270 N Wickham Rd,11,Melbourne,FL,32935
+2026-03-06,16:00,18:00,Tax Time,1428 N Woodland Blvd,130-007,Deland,FL,32720
+2026-03-07,16:00,18:00,Tax Time,3665 S Orlando Dr,,Sanford,FL,32773
+2026-03-13,16:00,18:00,Tax Time,240 Kersey St,,Davenport,FL,33897
+2026-03-14,12:00,14:00,Tax Time,1235 Providence Blvd,13,Deltona,FL,32725
+2026-03-06,15:00,17:00,Tax Time,7420 N Beach St,224,Fort Worth,TX,76137
+2026-03-14,12:00,14:00,Tax Time,320 S Nursery Rd,,Irving,TX,75060
+2026-03-20,15:00,17:00,Tax Time,2625 Old Denton Rd,,Carrollton,TX,75007
+2026-03-14,17:00,19:00,Tax Time,3200 S Lancaster Rd,760,Dallas,TX,75216
+2026-03-14,12:00,14:00,Tax Time,800 Ross Ave,Ste 180,Dallas,TX,75202
+2026-03-14,17:00,19:00,Tax Time,3012 Inwood Rd,C,Dallas,TX,75235
+2026-03-07,17:00,19:00,Tax Time,7812 Lake June Rd,100,Dallas,TX,75217
+2026-03-06,15:00,17:00,Tax Time,4330 Gannon Ln,C,Dallas,TX,75237
+2026-03-13,15:00,17:00,Tax Time,712 W Pipeline Rd,,Hurst,TX,76053
+2026-03-20,15:00,17:00,Tax Time,11055 Dennis Rd,23,Dallas,TX,75229
+2026-03-07,12:00,14:00,Tax Time,11361 Mccree Rd,130,Dallas,TX,75238
+2026-03-07,17:00,19:00,Tax Time,1433 W Kingsley Rd,103,Garland,TX,75044
+2026-02-27,15:00,17:00,Tax Time,1450 W Pleasant Run Rd,Suite 108,Lancaster,TX,75146
+2026-03-07,12:00,14:00,Tax Time,10325 Lake June Rd,,Dallas,TX,75217
+2026-03-21,12:00,14:00,Tax Time,9009 Bruton Rd,,Dallas,TX,75217
+2026-02-28,12:00,14:00,Tax Time,541 W Jefferson Blvd,,Dallas,TX,75208
+2026-03-06,15:00,17:00,Tax Time,3551 N Belt Line Rd,,Irving,TX,75062
+2026-03-07,12:00,14:00,Tax Time,4025 E Belknap St,B,Haltom City,TX,76111
+2026-03-13,15:00,17:00,Tax Time,6306 Meadowbrook Dr,,Fort Worth,TX,76112
+2026-03-21,11:00,13:00,Tax Time,805 N Belt Line Rd,,Irving,TX,75061
+2026-02-28,17:00,19:00,Tax Time,200 W Jefferson Blvd,Unit A,Dallas,TX,75208
+2026-03-14,12:00,14:00,Tax Time,3939 S Polk St,202,Dallas,TX,75224
+2026-02-27,15:00,17:00,Tax Time,3731 State Hwy 31 W,Suite D,Corsicana,TX,75110
+2026-03-20,15:00,17:00,Tax Time,6155 Samuell Blvd,120,Dallas,TX,75228
+2026-03-14,17:00,19:00,Tax Time,2223 Singleton Blvd,,Dallas,TX,75212
+2026-03-07,17:00,19:00,Tax Time,3530 Denton Hwy,,Haltom City,TX,76117
+2026-03-21,16:00,18:00,Tax Time,1816 W Irving Blvd,,Irving,TX,75061
+2026-03-13,15:00,17:00,Tax Time,2000 E Pioneer Pkwy,300,Arlington,TX,76010
+2026-02-28,17:00,19:00,Tax Time,433 E Pioneer Pkwy,Suite A,Grand Prairie,TX,75051
+2026-02-28,12:00,14:00,Tax Time,817 W Pioneer Pkwy,,Grand Prairie,TX,75051
+2026-02-28,12:00,14:00,Tax Time,11902 Jones Rd,E,Houston,TX,77070
+2026-02-27,15:00,17:00,Tax Time,23607 Kelly Joe Smith Rd,Suite A,Porter,TX,77365
+2026-03-14,17:00,19:00,Tax Time,3341 Telephone Rd,Suite 112,Houston,TX,77023
+2026-02-28,12:00,14:00,Tax Time,850 Grand Ave,,Bacliff,TX,77518
+2026-03-06,15:00,17:00,Tax Time,1213 N Velasco St,,Angleton,TX,77515
+2026-03-21,12:00,14:00,Tax Time,20851 FM 1485 Rd,,New Caney,TX,77357
+2026-03-07,12:00,14:00,Tax Time,8030 Fm 1765,Suite B-102,Texas City,TX,77591
+2026-03-14,12:00,14:00,Tax Time,5819 Gulf Fwy,Unit 19-400,Houston,TX,77023
+2026-02-21,12:00,14:00,Tax Time,1417 West Mount Houston Rd,,Houston,TX,77038
+2026-03-07,12:00,14:00,Tax Time,11818 Airline Dr,Suite K,Houston,TX,77037
+2026-03-21,17:00,19:00,Tax Time,20203 FM 1485 Rd,,New Caney,TX,77357
+2026-03-06,15:00,17:00,Tax Time,951 Rollingbrook Dr,Suite 1,Baytown,TX,77521
+2026-02-28,17:00,19:00,Tax Time,12922 Willow Chase Dr,,Houston,TX,77070
+2026-03-21,12:00,14:00,Tax Time,3708 Gulfway Dr,A,Port Arthur,TX,77642
+2026-03-21,17:00,19:00,Tax Time,4700 Highway 365,Suite E,Port Arthur,TX,77642
+2026-02-20,15:00,17:00,Tax Time,12100 Veterans Memorial Dr,Suite J,Houston,TX,77067
+2026-03-06,15:00,17:00,Tax Time,320 W Rankin Rd,Suite D,Houston,TX,77090
+2026-03-06,15:00,17:00,Tax Time,31315 Fm 2920,Suite 23,Waller,TX,77484
+2026-03-06,15:00,17:00,Tax Time,13158 Veterans Memorial Dr,,Houston,TX,77014
+2026-02-20,15:00,17:00,Tax Time,4765 FM 1960 Rd W,Suite B,Houston,TX,77069
+2026-02-27,15:00,17:00,Tax Time,13819 Cypress North Houston Rd,,Cypress,TX,77429
+2026-03-13,15:00,17:00,Tax Time,10769 Eastex Fwy Rd,Suite J,Houston,TX,77093
+2026-03-13,15:00,17:00,Tax Time,2765 Washington Blvd,,Beaumont,TX,77705
+2026-03-07,12:00,14:00,Tax Time,1001 Richey St,Suite A,Pasadena,TX,77506
+2026-03-07,17:00,19:00,Tax Time,1209 Main Street,Suite D/e,Pasadena,TX,77506
+2026-03-13,15:00,17:00,Tax Time,2303 N Main St,,Liberty,TX,77575
+2026-03-14,17:00,19:00,Tax Time,1401 Spencer Hwy,,South Houston,TX,77587
+2026-02-27,15:00,17:00,Tax Time,3970 Eastex Fwy,,Beaumont,TX,77703
+2026-03-14,12:00,14:00,Tax Time,2867 S Richey St,,Houston,TX,77017
+2026-03-14,17:00,19:00,Tax Time,2619 Red Bluff Rd,Suite 130,Pasadena,TX,77506
+2026-03-21,12:00,14:00,Tax Time,3703a Aldine Mail Rte,,Houston,TX,77039
+2026-03-21,17:00,19:00,Tax Time,5186 Aldine Mail Rte Rd,,Houston,TX,77039
+2026-03-06,15:00,17:00,Tax Time,5815 Lockwood Dr,Ste B,Houston,TX,77026
+2026-03-07,17:00,19:00,Tax Time,11014 Airline Dr,,Houston,TX,77037
+2026-03-13,15:00,17:00,Tax Time,7050 Bissonnet St,,Houston,TX,77074
+2026-03-13,17:00,19:00,Tax Time,10868 Beechnut St,,Houston,TX,77072
+2026-03-20,15:00,17:00,Tax Time,7413 Airline Dr,Suite 300,Houston,TX,77076
+2026-03-20,15:00,17:00,Tax Time,10868 W Bellfort Ave,,Houston,TX,77099
+2026-02-27,15:00,17:00,Tax Time,2803 7th St,,Bay City,TX,77414
+2026-03-14,12:00,14:00,Tax Time,2225 Southmore Ave,#2225,Pasadena,TX,77502
+2026-03-20,15:00,17:00,Tax Time,3602 Avenue H,,Rosenberg,TX,77471
+2026-03-20,15:00,17:00,Tax Time,2404 Greenhouse Rd,Suite A,Houston,TX,77084
+2026-02-28,17:00,19:00,Tax Time,3330 Hillcroft St,Suite E,Houston,TX,77057
+2026-03-14,12:00,14:00,Tax Time,8610 Irvington Blvd,A,Houston,TX,77022
+2026-03-13,15:00,17:00,Tax Time,6855 S Gessner Rd,,Houston,TX,77036
+2026-02-21,12:00,14:00,Tax Time,1103-b S Mason Rd,,Katy,TX,77450
+2026-02-28,12:00,14:00,Tax Time,5730 Chimney Rock Road,,Houston,TX,77081
+2026-03-07,12:00,14:00,Tax Time,6608 Highway 6 N,,Houston,TX,77084
+2026-03-20,15:00,17:00,Tax Time,12303 Westheimer Rd,Suite D,Houston,TX,77077
+2026-02-27,15:00,17:00,Tax Time,11102 Briar Forest Dr,Unit F,Houston,TX,77042
+2026-02-20,15:00,17:00,Tax Time,4881 W Commerce St,,San Antonio,TX,78237
+2026-02-21,12:00,14:00,Tax Time,7121 W Us Hwy 90,Unit 170,San Antonio,TX,78227
+2026-02-21,17:00,19:00,Tax Time,8256 Marbach Rd,,San Antonio,TX,78227
+2026-02-20,15:00,17:00,Tax Time,1862 S Ww White Rd,,San Antonio,TX,78220
+2026-02-27,15:00,17:00,Tax Time,323 N New Braunfels Ave,104,San Antonio,TX,78202
+2026-02-28,12:00,14:00,Tax Time,11545 West Ave,,San Antonio,TX,78213
+2026-02-28,17:00,19:00,Tax Time,2180 Jackson Keller Rd,,San Antonio,TX,78213
+2026-03-06,15:00,17:00,Tax Time,3227 Sw Military Dr,SUITE 116,San Antonio,TX,78211
+2026-03-07,17:00,19:00,Tax Time,1139 SE Military Dr,SUITE 108,San Antonio,TX,78214
+2026-03-07,12:00,14:00,Tax Time,6210 Pecan Valley Dr,,San Antonio,TX,78223
+2026-02-27,15:00,17:00,Tax Time,11435 W Buckeye Rd,Unit A-103,Avondale,AZ,85323
+2026-02-27,15:00,17:00,Tax Time,367 S Arizona Ave,1,Chandler,AZ,85225
+2026-02-27,15:00,17:00,Tax Time,3348 W Van Buren St,B,Phoenix,AZ,85009
+2026-02-28,12:00,14:00,Tax Time,1320 W Elliot Rd,104,Tempe,AZ,85284
+2026-02-28,12:00,14:00,Tax Time,6442 W Glendale Ave,,Glendale,AZ,85301
+2026-02-28,12:00,14:00,Tax Time,8024 N 35th Ave,,Phoenix,AZ,85051
+2026-03-06,15:00,17:00,Tax Time,1810 W Southern Ave,Unit 103,Phoenix,AZ,85041
+2026-03-06,15:00,17:00,Tax Time,2753 E Broadway Rd,,Mesa,AZ,85204
+2026-03-06,15:00,17:00,Tax Time,350 E Southern Ave,,Mesa,AZ,85210
+2026-03-07,12:00,14:00,Tax Time,3549 W Thomas Rd,Suite 101,Phoenix,AZ,85019
+2026-03-07,17:00,19:00,Tax Time,4264 W Thomas Rd,,Phoenix,AZ,85019
+2026-03-07,12:00,14:00,Tax Time,5045 W Indian School Rd,105,Phoenix,AZ,85031
+2026-03-13,15:00,17:00,Tax Time,318 E Brown Rd,108,Mesa,AZ,85201
+2026-03-13,15:00,17:00,Tax Time,1940 W Indian School Rd,SUITE 7,Phoenix,AZ,85015
+2026-03-13,15:00,17:00,Tax Time,323 N Gilbert Rd,SUITE 107,Mesa,AZ,85203
+2026-03-14,11:00,13:00,Tax Time,1635 E Baseline Rd,109,Phoenix,AZ,85042
+2026-03-14,12:00,14:00,Tax Time,2700 W Baseline Rd,Ste 132,Tempe,AZ,85283
+2026-03-14,16:00,18:00,Tax Time,610 E Baseline Rd,Ste C1,Phoenix,AZ,85042
+2026-03-20,15:00,17:00,Tax Time,2816 N 16th St,Suite C,Phoenix,AZ,85006

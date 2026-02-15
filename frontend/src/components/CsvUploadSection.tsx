@@ -67,7 +67,7 @@ const CsvUploadSection: React.FC<CsvUploadSectionProps> = ({ onUploadSuccess }) 
   return (
     <div className="bg-gray-50 p-4 rounded-lg border">
       <h3 className="text-lg font-semibold text-gray-900 mb-3">CSV Upload</h3>
-      
+
       <div className="space-y-3">
         <div>
           <label htmlFor="csv-file" className="block text-sm font-medium text-gray-700 mb-1">
@@ -108,7 +108,7 @@ const CsvUploadSection: React.FC<CsvUploadSectionProps> = ({ onUploadSuccess }) 
           >
             {isUploading ? 'Uploading...' : 'Upload CSV'}
           </button>
-          
+
           <button
             onClick={handleClear}
             disabled={isUploading}
@@ -118,8 +118,11 @@ const CsvUploadSection: React.FC<CsvUploadSectionProps> = ({ onUploadSuccess }) 
           </button>
         </div>
 
-        <div className="text-xs text-gray-500">
-          <p>CSV format should include columns: event_date, event_time, event_type, address, address2, city, state, zip, start_date, end_date</p>
+        <div className="text-xs text-gray-500 space-y-1">
+          <p><strong>Required columns:</strong> start_date, event_type, address, city, state, zip</p>
+          <p><strong>Optional columns:</strong> end_date, start_time, end_time, address2</p>
+          <p><strong>Date format:</strong> YYYY-MM-DD (e.g., 2025-03-15)</p>
+          <p><strong>Time formats accepted:</strong> 3pm, 3:30pm, 3:30 PM, 15:00 (leave empty for "All Day")</p>
         </div>
       </div>
     </div>
