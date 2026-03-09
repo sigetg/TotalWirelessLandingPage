@@ -38,8 +38,7 @@ const US_STATES = [
 
 const formatDateForInput = (dateStr: string | undefined): string => {
   if (!dateStr) return '';
-  const date = new Date(dateStr);
-  return date.toISOString().split('T')[0];
+  return dateStr.split('T')[0];
 };
 
 const formatTimeForInput = (timeStr: string | undefined): string => {

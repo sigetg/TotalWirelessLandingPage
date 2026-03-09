@@ -10,7 +10,8 @@ type SortDirection = 'asc' | 'desc';
 type EventTab = 'active' | 'inactive';
 
 const formatDate = (dateStr: string): string => {
-  const date = new Date(dateStr);
+  const [year, month, day] = dateStr.split('T')[0].split('-');
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
@@ -35,14 +36,14 @@ const isEventActive = (event: Event): boolean => {
 
   // If event has end_date, check if it's still running
   if (event.end_date) {
-    const endDate = new Date(event.end_date);
-    endDate.setHours(0, 0, 0, 0);
+    const [ey, em, ed] = event.end_date.split('T')[0].split('-');
+    const endDate = new Date(Number(ey), Number(em) - 1, Number(ed));
     return endDate >= today;
   }
 
   // Otherwise check start_date
-  const startDate = new Date(event.start_date);
-  startDate.setHours(0, 0, 0, 0);
+  const [sy, sm, sd] = event.start_date.split('T')[0].split('-');
+  const startDate = new Date(Number(sy), Number(sm) - 1, Number(sd));
   return startDate >= today;
 };
 
